@@ -1,0 +1,47 @@
+version: "3.7"
+services:
+  db:
+    image: "mysql:8.0"
+    container_name: mysql-container
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./docker/mysql/custom.cnf:/etc/mysql/conf.d/custom.cnf
+      - ./docker/mysql/logs:/var/log/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+    networks:
+      - app
+
+  server:
+    image: ghcr.io/zisoo-choi/personal-project-backend:latest
+    build: .
+    container_name: personal-project-backend-server
+    volumes:
+      - appdata:/app
+    depends_on:
+      - db
+    ports:
+      - "7777:7777"
+    command:
+      - bash
+      - -c
+      - |
+        /wait-for-it.sh db:3306 -t 15
+        java -jar /app.jar
+    networks:
+      - app
+
+networks:
+  app:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local
+  appdata:
+    driver: local

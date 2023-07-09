@@ -1,6 +1,7 @@
 package kh.project.demo.library.member.controller;
 
 import kh.project.demo.library.member.controller.form.MemberIdCheckForm;
+import kh.project.demo.library.member.controller.form.MemberSignUpForm;
 import kh.project.demo.library.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,5 +20,12 @@ public class MemberController {
         log.info("check id duplication: "+ memberIdCheckForm.getMemberId());
 
         return memberService.checkIdDuplication(memberIdCheckForm.getMemberId());
+    }
+
+    @PostMapping("/sign-up")
+    public Boolean signIn(@RequestBody MemberSignUpForm memberSignUpForm) {
+        log.info("sign Up()");
+
+        return memberService.memberSignUp(memberSignUpForm);
     }
 }

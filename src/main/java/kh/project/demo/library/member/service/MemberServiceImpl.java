@@ -1,5 +1,6 @@
 package kh.project.demo.library.member.service;
 
+import kh.project.demo.library.member.controller.form.MemberSignUpForm;
 import kh.project.demo.library.member.entity.Member;
 import kh.project.demo.library.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,12 @@ public class MemberServiceImpl implements MemberService{
         } else {
             return true;
         }
+    }
+
+    @Override
+    public Boolean memberSignUp(MemberSignUpForm memberSignUpForm) {
+        memberRepository.save(memberSignUpForm.toMember());
+        return true;
     }
 
 }

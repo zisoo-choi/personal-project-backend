@@ -1,4 +1,4 @@
-package kh.project.demo.library.member.controller.form;
+package kh.project.demo.library.member.controller.form.request;
 
 import kh.project.demo.library.member.entity.Member;
 import kh.project.demo.library.member.entity.MemberRole;

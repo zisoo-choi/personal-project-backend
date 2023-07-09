@@ -1,4 +1,4 @@
-package kh.project.demo.library.member.controller.form;
+package kh.project.demo.library.member.controller.form.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

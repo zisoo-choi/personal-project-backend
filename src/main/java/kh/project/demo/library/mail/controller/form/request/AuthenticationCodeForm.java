@@ -1,4 +1,4 @@
-package kh.project.demo.library.mail.controller.form;
+package kh.project.demo.library.mail.controller.form.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package kh.project.demo.library.member.service;
 
-import kh.project.demo.library.member.controller.form.MemberSignUpForm;
+import kh.project.demo.library.member.controller.form.request.MemberSignUpForm;
 
 public interface MemberService {
 

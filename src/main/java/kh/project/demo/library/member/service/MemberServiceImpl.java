@@ -1,6 +1,6 @@
 package kh.project.demo.library.member.service;
 
-import kh.project.demo.library.member.controller.form.MemberSignUpForm;
+import kh.project.demo.library.member.controller.form.request.MemberSignUpForm;
 import kh.project.demo.library.member.entity.Member;
 import kh.project.demo.library.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;

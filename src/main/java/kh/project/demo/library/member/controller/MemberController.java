@@ -1,7 +1,7 @@
 package kh.project.demo.library.member.controller;
 
-import kh.project.demo.library.member.controller.form.MemberIdCheckForm;
-import kh.project.demo.library.member.controller.form.MemberSignUpForm;
+import kh.project.demo.library.member.controller.form.request.MemberIdCheckForm;
+import kh.project.demo.library.member.controller.form.request.MemberSignUpForm;
 import kh.project.demo.library.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

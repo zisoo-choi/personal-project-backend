@@ -1,7 +1,7 @@
 package kh.project.demo.library.mail.controller;
 
-import kh.project.demo.library.mail.controller.form.AuthenticationCodeForm;
-import kh.project.demo.library.mail.controller.form.EmailMessage;
+import kh.project.demo.library.mail.controller.form.request.AuthenticationCodeForm;
+import kh.project.demo.library.mail.controller.form.request.EmailMessageToUserForm;
 import kh.project.demo.library.mail.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,10 +16,10 @@ public class EmailController {
     final private EmailService emailService;
 
     @PostMapping("/user-send-email")
-    public void sendEmail(@RequestBody EmailMessage emailMessage){
+    public void sendEmail(@RequestBody EmailMessageToUserForm emailMessageToUserForm){
         log.info("동작 !");
 
-        emailService.sendMail(emailMessage);
+        emailService.sendMail(emailMessageToUserForm);
     }
 
     @PostMapping("/authentication-code")

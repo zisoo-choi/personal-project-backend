@@ -1,4 +1,4 @@
-package kh.project.demo.library.mail.controller.form;
+package kh.project.demo.library.mail.controller.form.request;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmailMessage {
+public class EmailMessageToUserForm {
 
     private String to;
 }

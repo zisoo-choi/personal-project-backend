@@ -1,11 +1,9 @@
 package kh.project.demo.library.member.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+@Getter
 @Entity
 @Builder
 @NoArgsConstructor
@@ -19,7 +17,10 @@ public class Member {
 
     @Column(name="memberId" , unique=true)
     private String memberId;
+
     private String memberPw;
+
+    @Column(name="email" , unique=true)
     private String email;
 
     @Setter

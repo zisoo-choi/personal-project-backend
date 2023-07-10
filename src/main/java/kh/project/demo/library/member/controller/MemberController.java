@@ -1,7 +1,9 @@
 package kh.project.demo.library.member.controller;
 
 import kh.project.demo.library.member.controller.form.request.MemberIdCheckForm;
+import kh.project.demo.library.member.controller.form.request.MemberSignInForm;
 import kh.project.demo.library.member.controller.form.request.MemberSignUpForm;
+import kh.project.demo.library.member.controller.form.response.MemberLoginRespnseForm;
 import kh.project.demo.library.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,5 +29,12 @@ public class MemberController {
         log.info("sign Up()");
 
         return memberService.memberSignUp(memberSignUpForm);
+    }
+
+    @PostMapping("/sign-In")
+    public MemberLoginRespnseForm signIn(@RequestBody MemberSignInForm memberSignInForm) {
+        log.info("sign In()");
+
+        return memberService.memberSignIn(memberSignInForm);
     }
 }

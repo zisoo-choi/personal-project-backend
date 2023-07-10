@@ -18,7 +18,7 @@ import java.util.Random;
 public class EmailServiceImpl implements EmailService{
 
     private final JavaMailSender javaMailSender;
-    private String authNumber = createKey();
+    private String authNumber = createCode();
 
     public void sendMail(EmailMessageToUserForm emailMessageToUserForm) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -52,7 +52,7 @@ public class EmailServiceImpl implements EmailService{
         }
     }
 
-    public static String createKey() {
+    public static String createCode() {
         StringBuffer key = new StringBuffer();
         Random rnd = new Random();
 

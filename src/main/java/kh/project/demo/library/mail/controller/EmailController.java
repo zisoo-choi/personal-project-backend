@@ -10,21 +10,21 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/mail-test")
+@RequestMapping("/email-authentication")
 public class EmailController {
 
     final private EmailService emailService;
 
-    @PostMapping("/user-send-email")
+    @PostMapping("/send-email")
     public void sendEmail(@RequestBody EmailMessageToUserForm emailMessageToUserForm){
-        log.info("동작 !");
+        log.info("이메일 코드 보내기");
 
         emailService.sendMail(emailMessageToUserForm);
     }
 
     @PostMapping("/authentication-code")
     public boolean authCode(@RequestBody AuthenticationCodeForm authCode) {
-        log.info("이메일 코드 검증 동작");
+        log.info("이메일 코드 검증");
 
         return emailService.authenticationCodeCheck(authCode);
     }

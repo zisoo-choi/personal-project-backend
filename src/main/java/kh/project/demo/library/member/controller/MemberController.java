@@ -3,6 +3,7 @@ package kh.project.demo.library.member.controller;
 import kh.project.demo.library.member.controller.form.request.MemberIdCheckForm;
 import kh.project.demo.library.member.controller.form.request.MemberBasicForm;
 import kh.project.demo.library.member.controller.form.request.MemberSignUpForm;
+import kh.project.demo.library.member.controller.form.request.MemberAccountStopForm;
 import kh.project.demo.library.member.controller.form.response.MemberLoginRespnseForm;
 import kh.project.demo.library.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -44,4 +45,12 @@ public class MemberController {
 
         return memberService.memberDelete(memberDeleteForm);
     }
+
+    @PostMapping("/member-account-stop")
+    public boolean MemberAccountStop(@RequestBody MemberAccountStopForm memberAccountForm) {
+        log.info("member account stop");
+
+        return memberService.memberAccountStop(memberAccountForm);
+    }
+
 }

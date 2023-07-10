@@ -29,6 +29,7 @@ public class Member {
     @Setter
     private String phoneNumber;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     private MemberState memberState;
 

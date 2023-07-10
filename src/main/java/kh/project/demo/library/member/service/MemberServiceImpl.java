@@ -1,9 +1,11 @@
 package kh.project.demo.library.member.service;
 
+import kh.project.demo.library.member.controller.form.request.MemberAccountStopForm;
 import kh.project.demo.library.member.controller.form.request.MemberBasicForm;
 import kh.project.demo.library.member.controller.form.request.MemberSignUpForm;
 import kh.project.demo.library.member.controller.form.response.MemberLoginRespnseForm;
 import kh.project.demo.library.member.entity.Member;
+import kh.project.demo.library.member.entity.MemberRole;
 import kh.project.demo.library.member.entity.MemberState;
 import kh.project.demo.library.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -73,6 +75,41 @@ public class MemberServiceImpl implements MemberService{
         }
 
         log.info("존재하지 않는 계정입니다.");
+        return false;
+    }
+
+    @Override
+    public boolean memberAccountStop(MemberAccountStopForm memberAccountForm){
+        final Optional<Member> maybeNormal = memberRepository.findByMemberId(memberAccountForm.getMemberId());
+        final Optional<Member> maybeManager = memberRepository.findByMemberId(memberAccountForm.getManagerId());
+
+        if (maybeNormal.isEmpty()) {
+            log.info("존재하지 않는 회원 계정입니다.");
+            return false;
+        }
+
+        if (maybeManager.isEmpty()) {
+            log.info("존재하지 않는 관리자 계정입니다.");
+            return false;
+        }
+
+        Member normal = maybeNormal.get();
+        Member manager = maybeManager.get();
+
+        if (normal.getMemberState().equals(MemberState.OK)){
+            if (manager.getMemberRole().equals(MemberRole.MANAGER)) {
+
+                normal.setMemberState(MemberState.STOP);
+                memberRepository.save(normal);
+                log.info("계정이 정지 되었습니다.");
+                return true;
+            }
+
+            log.info("관리자가 아닌 사용자는 계정을 정지할 수 없습니다.");
+            return false;
+        }
+
+        log.info("계정 삭제 실패");
         return false;
     }
 

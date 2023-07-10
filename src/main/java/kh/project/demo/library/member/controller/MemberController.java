@@ -1,7 +1,7 @@
 package kh.project.demo.library.member.controller;
 
 import kh.project.demo.library.member.controller.form.request.MemberIdCheckForm;
-import kh.project.demo.library.member.controller.form.request.MemberSignInForm;
+import kh.project.demo.library.member.controller.form.request.MemberBasicForm;
 import kh.project.demo.library.member.controller.form.request.MemberSignUpForm;
 import kh.project.demo.library.member.controller.form.response.MemberLoginRespnseForm;
 import kh.project.demo.library.member.service.MemberService;
@@ -32,9 +32,16 @@ public class MemberController {
     }
 
     @PostMapping("/sign-In")
-    public MemberLoginRespnseForm signIn(@RequestBody MemberSignInForm memberSignInForm) {
+    public MemberLoginRespnseForm signIn(@RequestBody MemberBasicForm memberSignInForm) {
         log.info("sign In()");
 
         return memberService.memberSignIn(memberSignInForm);
+    }
+
+    @DeleteMapping("/member-delete")
+    public boolean MemberDelete(@RequestBody MemberBasicForm memberDeleteForm) {
+        log.info("member delete()");
+
+        return memberService.memberDelete(memberDeleteForm);
     }
 }

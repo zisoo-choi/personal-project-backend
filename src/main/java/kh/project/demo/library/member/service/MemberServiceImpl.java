@@ -1,6 +1,6 @@
 package kh.project.demo.library.member.service;
 
-import kh.project.demo.library.member.controller.form.request.MemberSignInForm;
+import kh.project.demo.library.member.controller.form.request.MemberBasicForm;
 import kh.project.demo.library.member.controller.form.request.MemberSignUpForm;
 import kh.project.demo.library.member.controller.form.response.MemberLoginRespnseForm;
 import kh.project.demo.library.member.entity.Member;
@@ -38,7 +38,7 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public MemberLoginRespnseForm memberSignIn(MemberSignInForm memberSignInForm){
+    public MemberLoginRespnseForm memberSignIn(MemberBasicForm memberSignInForm){
         final Optional<Member> maybeMember = memberRepository.findByMemberId(memberSignInForm.getUserId());
 
         if (maybeMember.isEmpty()) {
@@ -60,6 +60,20 @@ public class MemberServiceImpl implements MemberService{
 
         log.info("로그인 실패!");
         return new MemberLoginRespnseForm(null);
+    }
+
+    @Override
+    public boolean memberDelete(MemberBasicForm memberDeleteForm){
+        final Optional<Member> mayMember = memberRepository.findByMemberId(memberDeleteForm.getUserId());
+
+        if (mayMember.isPresent()) {
+            memberRepository.delete(mayMember.get());
+            log.info("계정 삭제 성공");
+            return true;
+        }
+
+        log.info("존재하지 않는 계정입니다.");
+        return false;
     }
 
 }

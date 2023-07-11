@@ -18,11 +18,11 @@ public class MemberController {
 
     final private MemberService memberService;
 
-    @PostMapping("/cheke-id")
-    public Boolean checkId(@RequestBody MemberIdCheckForm memberIdCheckForm) {
-        log.info("check id duplication: "+ memberIdCheckForm.getMemberId());
+    @GetMapping("/cheke-id/{memberId}")
+    public Boolean checkId(@PathVariable("memberId") String memberId) {
+        log.info("check id duplication: "+ memberId);
 
-        return memberService.checkIdDuplication(memberIdCheckForm.getMemberId());
+        return memberService.checkIdDuplication(memberId);
     }
 
     @PostMapping("/sign-up")

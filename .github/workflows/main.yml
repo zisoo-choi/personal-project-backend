@@ -31,6 +31,15 @@ jobs:
             ~/.gradle/caches
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-
+          
+      ## email
+      - name: Create email.properties for CD Deploy
+        run: |
+          mkdir -p src/main/resources
+          cd src/main/resources
+          pwd
+          echo "${{ secrets.EMAIL_PROPERTIES }}" > email.properties
+          cat email.properties
 
       ## chmod gradlew
       - name: Grant execute permission for gradlew
@@ -47,7 +56,6 @@ jobs:
             docker buildx create --name arm64builder --use
             docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile -t ghcr.io/${{ github.actor }}/personal-project-backend:latest --push .
             docker logout
-      
       
   deploy:
     needs: build

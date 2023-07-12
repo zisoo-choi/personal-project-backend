@@ -16,10 +16,10 @@ public class EmailController {
     final private EmailService emailService;
 
     @PostMapping("/send-email")
-    public void sendEmail(@RequestBody EmailMessageToUserForm emailMessageToUserForm){
+    public boolean sendEmail(@RequestBody EmailMessageToUserForm emailMessageToUserForm){
         log.info("이메일 코드 보내기");
 
-        emailService.sendMail(emailMessageToUserForm);
+        return emailService.sendMail(emailMessageToUserForm);
     }
 
     @PostMapping("/authentication-code")

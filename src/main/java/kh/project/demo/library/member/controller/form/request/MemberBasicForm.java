@@ -7,6 +7,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MemberBasicForm {
 
-    private String userId;
-    private String userPw;
+    private String memberId;
+    private String memberPw;
 }

@@ -20,7 +20,7 @@ public class EmailServiceImpl implements EmailService{
     private final JavaMailSender javaMailSender;
     private String authNumber = createCode();
 
-    public void sendMail(EmailMessageToUserForm emailMessageToUserForm) {
+    public boolean sendMail(EmailMessageToUserForm emailMessageToUserForm) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
         try {
@@ -32,10 +32,10 @@ public class EmailServiceImpl implements EmailService{
 
             javaMailSender.send(mimeMessage);
             log.info("Success");
+            return true;
 
         } catch (MessagingException e) {
             log.info("fail");
-
             throw new RuntimeException(e);
         }
     }

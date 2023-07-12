@@ -5,6 +5,6 @@ import kh.project.demo.library.mail.controller.form.request.EmailMessageToUserFo
 
 public interface EmailService {
 
-    void sendMail(EmailMessageToUserForm emailMessageToUserForm);
+    boolean sendMail(EmailMessageToUserForm emailMessageToUserForm);
     boolean authenticationCodeCheck(AuthenticationCodeForm authCode);
 }

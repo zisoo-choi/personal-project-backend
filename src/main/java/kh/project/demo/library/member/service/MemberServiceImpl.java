@@ -65,7 +65,7 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public MemberLoginRespnseForm memberSignIn(MemberBasicForm memberSignInForm){
-        final Optional<Member> maybeMember = memberRepository.findByMemberId(memberSignInForm.getUserId());
+        final Optional<Member> maybeMember = memberRepository.findByMemberId(memberSignInForm.getMemberId());
 
         if (maybeMember.isEmpty()) {
             log.info("로그인 실패!");
@@ -75,7 +75,7 @@ public class MemberServiceImpl implements MemberService{
         Member member = maybeMember.get();
 
         if (member.getMemberState().equals(MemberState.OK)) {
-            if (member.getMemberPw().equals(memberSignInForm.getUserPw())) {
+            if (member.getMemberPw().equals(memberSignInForm.getMemberPw())) {
                 log.info("로그인 성공!");
                 return new MemberLoginRespnseForm(UUID.randomUUID());
             }
@@ -90,7 +90,7 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public boolean memberDelete(MemberBasicForm memberDeleteForm){
-        final Optional<Member> mayMember = memberRepository.findByMemberId(memberDeleteForm.getUserId());
+        final Optional<Member> mayMember = memberRepository.findByMemberId(memberDeleteForm.getMemberId());
 
         if (mayMember.isPresent()) {
             memberRepository.delete(mayMember.get());

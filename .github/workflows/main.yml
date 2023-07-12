@@ -39,8 +39,8 @@ jobs:
           mkdir -p src/main/resources
           cd src/main/resources
           pwd
-          scho "${{ secrets.CD_DEPLOY_CONFIG }}" > application.properties
-          cat application.properties
+          scho "${{ secrets.CD_DEPLOY_CONFIG }}" > application.yaml
+          cat application.yaml
           
       ## email
       - name: Create email.properties for CD Deploy

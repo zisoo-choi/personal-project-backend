@@ -25,6 +25,13 @@ public class MemberController {
         return memberService.checkIdDuplication(memberId);
     }
 
+    @GetMapping("/check-email/{email}")
+    public Boolean checkEmail(@PathVariable("email") String email) {
+        log.info("check email duplication: "+ email);
+
+        return memberService.checkEmailDuplication(email);
+    }
+
     @PostMapping("/sign-up")
     public Boolean signIn(@RequestBody MemberSignUpForm memberSignUpForm) {
         log.info("sign Up()");

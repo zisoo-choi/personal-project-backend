@@ -16,4 +16,6 @@ public interface MemberService {
     boolean memberDelete(MemberBasicForm memberDeleteForm);
 
     boolean memberAccountStop(MemberAccountStopForm memberAccountForm);
+
+    Boolean checkEmailDuplication(String email);
 }

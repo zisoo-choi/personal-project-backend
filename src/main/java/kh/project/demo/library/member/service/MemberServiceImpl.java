@@ -28,6 +28,18 @@ public class MemberServiceImpl implements MemberService{
 
         if (maybeMember.isPresent()) {
             return false;
+
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public Boolean checkEmailDuplication(String email){
+        Optional<Member> maybeMember = memberRepository.findByEmail(email);
+
+        if (maybeMember.isPresent()) {
+            return false;
         } else {
             return true;
         }
@@ -35,6 +47,18 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public Boolean memberSignUp(MemberSignUpForm memberSignUpForm) {
+        Optional<Member> maybeMemberId = memberRepository.findByMemberId(memberSignUpForm.getMemberId());
+        if ( maybeMemberId.isPresent() ) {
+            log.info("존재하는 회원 아이디입니다.");
+            return false;
+        }
+
+        Optional<Member> maybeMemberEmail = memberRepository.findByEmail(memberSignUpForm.getEmail());
+        if ( maybeMemberEmail.isPresent() ) {
+            log.info("존재하는 회원 이메일 입니다.");
+            return false;
+        }
+
         memberRepository.save(memberSignUpForm.toMember());
         return true;
     }

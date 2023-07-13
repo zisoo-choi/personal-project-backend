@@ -34,19 +34,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
             
-      - name: Create application.yml for CD Deploy
-        run: |
-          mkdir -p src/main/resources
-          pwd
-          echo "${{ secrets.CD_DEPLOY_CONFIG_YML }}" > src/main/resources/application.yml
-          cat src/main/resources/application.yml
-          
-#       - name: Create application.properties for CD Deploy
+#       - name: Create application.yml for CD Deploy
 #         run: |
 #           mkdir -p src/main/resources
 #           pwd
-#           echo "${{ secrets.CD_DEPLOY_CONFIG }}" > src/main/resources/application.properties
-#           cat src/main/resources/application.properties
+#           echo "${{ secrets.CD_DEPLOY_CONFIG_YML }}" > src/main/resources/application.yml
+#           cat src/main/resources/application.yml
+          
+      - name: Create application.properties for CD Deploy
+        run: |
+          mkdir -p src/main/resources
+          pwd
+          echo "${{ secrets.CD_DEPLOY_CONFIG }}" > src/main/resources/application.properties
+          cat src/main/resources/application.properties
           
       ## email
       - name: Create email.properties for CD Deploy

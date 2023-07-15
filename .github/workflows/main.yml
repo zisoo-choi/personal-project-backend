@@ -54,8 +54,8 @@ jobs:
           mkdir -p src/main/resources
           cd src/main/resources
           pwd
-          echo "${{ secrets.EMAIL_PROPERTIES }}" > src/main/resources/email.properties
-          cat src/main/resources/email.properties
+          echo "${{ secrets.EMAIL_PROPERTIES }}" > email.properties
+          cat email.properties
           
       ## spring security + jwt
       - name: Create security.properties for CD Deploy

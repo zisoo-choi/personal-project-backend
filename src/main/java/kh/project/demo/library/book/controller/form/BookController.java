@@ -1,16 +1,13 @@
 package kh.project.demo.library.book.controller.form;
 
+import kh.project.demo.library.book.controller.form.request.RegisterBookForm;
 import kh.project.demo.library.book.entity.Book;
 import kh.project.demo.library.book.service.BookService;
-import kh.project.demo.security.dto.CustomUserDetail;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,6 +19,12 @@ public class BookController {
 
     final private BookService bookService;
 
+    // 도서 등록
+    @PostMapping("/register-book")
+    public boolean registerBook(@RequestBody RegisterBookForm requestForm) {
+        return bookService.registerationBook(requestForm);
+    }
+
     @GetMapping("/registration-date")
     public List<Book> newBook(@AuthenticationPrincipal UserDetails userDetail) {
         log.info(userDetail.getUsername());
@@ -29,9 +32,9 @@ public class BookController {
         return bookService.registerationDateSort();
     }
 
-    @GetMapping("/registration-date2")
-    public List<Book> newBook2() {
-        log.info("신간 도서 요청 !");
-        return bookService.registerationDateSort();
-    }
+//    @GetMapping("/registration-date2")
+//    public List<Book> newBook2() {
+//        log.info("신간 도서 요청 !");
+//        return bookService.registerationDateSort();
+//    }
 }

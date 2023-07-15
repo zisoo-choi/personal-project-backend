@@ -18,10 +18,10 @@ public class MemberSignUpForm {
     private String phoneNumber;
     private MemberRole memberRole;
 
-    public Member toMember() {
+    public Member toMember(String encodePassword) {
         return Member.builder()
                 .memberId(memberId)
-                .memberPw(memberPw)
+                .memberPw(encodePassword)
                 .email(email)
                 .address(address)
                 .phoneNumber(phoneNumber)

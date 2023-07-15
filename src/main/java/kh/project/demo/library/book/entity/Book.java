@@ -25,7 +25,6 @@ public class Book {
     @Column(name="isbn" , unique=true)
     private String isbn;
 
-    @Column(name="bookName" , unique=true)
     private String bookName;
 
     private String author;

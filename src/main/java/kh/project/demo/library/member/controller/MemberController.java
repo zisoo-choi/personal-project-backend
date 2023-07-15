@@ -39,9 +39,9 @@ public class MemberController {
         return memberService.memberSignUp(memberSignUpForm);
     }
 
-    @PostMapping("/sign-In")
+    @PostMapping("/sign-in")
     public MemberLoginRespnseForm signIn(@RequestBody MemberBasicForm memberSignInForm) {
-        log.info("sign In()");
+        log.info("sign in()");
 
         return memberService.memberSignIn(memberSignInForm);
     }

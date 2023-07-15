@@ -40,3 +40,4 @@ out/
 github.properties
 email.properties
 application.yml
+security.properties

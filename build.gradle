@@ -27,6 +27,7 @@ tasks.named('jar') {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
@@ -36,6 +37,13 @@ dependencies {
 
 	// 이메일
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	// jwt
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	implementation 'javax.xml.bind:jaxb-api:2.3.0'
+
+	// json 파일 만들어주는 컨버터
+	implementation 'com.google.code.gson:gson:2.8.9'
 }
 
 tasks.named('test') {

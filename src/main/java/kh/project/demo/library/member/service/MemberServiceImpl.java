@@ -10,6 +10,7 @@ import kh.project.demo.library.member.entity.MemberState;
 import kh.project.demo.library.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -59,7 +60,9 @@ public class MemberServiceImpl implements MemberService{
             return false;
         }
 
-        memberRepository.save(memberSignUpForm.toMember());
+        String encodePassword = new BCryptPasswordEncoder().encode(memberSignUpForm.getMemberPw());
+
+        memberRepository.save(memberSignUpForm.toMember(encodePassword));
         return true;
     }
 

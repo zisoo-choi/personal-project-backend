@@ -24,7 +24,7 @@ public class BookServiceImpl implements BookService{
     final private MemberRepository memberRepository;
 
     @Override
-    public boolean registerationBook(RegisterBookForm requestForm) {
+    public Book registerationBook(RegisterBookForm requestForm) {
         // 등록하는 사람의 역할 검증
         Optional<Member> mayMember = memberRepository.findByMemberNumber(requestForm.getRegisterManagerNumber());
 
@@ -32,7 +32,7 @@ public class BookServiceImpl implements BookService{
             Member member = mayMember.get();
             if (member.getMemberRole().equals(MemberRole.NORMAL)) {
                 log.info("관리자가 아니므로 권한이 없습니다.");
-                return false;
+                return null;
             }
         }
 
@@ -50,18 +50,17 @@ public class BookServiceImpl implements BookService{
                 book.bookAddAmount();
                 bookRepository.save(book); // 수정된 도서 정보 저장
                 log.info("존재하는 도서 이므로 수량이 증가합니다.");
-                return false;
+                return null;
             }
         }
 
         // 존재하지 않는 도서라면
         if (maybeBook.isEmpty()) {
             // 저장해준다.
-            bookRepository.save(requestForm.registerBook());
             log.info("도서 등록이 완료 되었습니다.");
-            return true;
+            return bookRepository.save(requestForm.registerBook());
         }
-        return false;
+        return null;
     }
 
     @Override

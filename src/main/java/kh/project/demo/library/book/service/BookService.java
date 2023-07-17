@@ -9,7 +9,7 @@ import java.util.List;
 public interface BookService {
     List<Book> registerationDateSort();
 
-    boolean registerationBook(RegisterBookForm requestForm);
+    Book registerationBook(RegisterBookForm requestForm);
 
     Book modify(Long bookId, RequestBookBoardForm requestBookBoardForm);
 }

@@ -22,7 +22,7 @@ public class BookController {
 
     // 도서 등록
     @PostMapping("/register-book")
-    public boolean registerBook(@RequestBody RegisterBookForm requestForm) {
+    public Book registerBook(@RequestBody RegisterBookForm requestForm) {
         return bookService.registerationBook(requestForm);
     }
 

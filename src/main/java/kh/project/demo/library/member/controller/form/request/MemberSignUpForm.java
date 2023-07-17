@@ -2,6 +2,7 @@ package kh.project.demo.library.member.controller.form.request;
 
 import kh.project.demo.library.member.entity.Member;
 import kh.project.demo.library.member.entity.MemberRole;
+import kh.project.demo.library.member.entity.MemberServiceState;
 import kh.project.demo.library.member.entity.MemberState;
 import lombok.*;
 
@@ -17,6 +18,7 @@ public class MemberSignUpForm {
     private String address;
     private String phoneNumber;
     private MemberRole memberRole;
+    private MemberServiceState memberServiceState;
 
     public Member toMember(String encodePassword) {
         return Member.builder()
@@ -27,6 +29,7 @@ public class MemberSignUpForm {
                 .phoneNumber(phoneNumber)
                 .memberRole(memberRole)
                 .memberState(MemberState.OK)
+                .memberServiceState(MemberServiceState.ServiceNormal)
                 .build();
     }
 }

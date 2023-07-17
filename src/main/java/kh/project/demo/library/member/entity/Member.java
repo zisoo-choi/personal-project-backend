@@ -35,4 +35,7 @@ public class Member {
 
     @Enumerated(EnumType.STRING)
     private MemberRole memberRole;
+
+    @Enumerated(EnumType.STRING)
+    private MemberServiceState memberServiceState;
 }

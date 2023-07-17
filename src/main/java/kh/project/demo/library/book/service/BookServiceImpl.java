@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -65,7 +64,7 @@ public class BookServiceImpl implements BookService{
         if (maybeBook.isEmpty()) {
             // 저장해준다.
             log.info("도서 등록이 완료 되었습니다.");
-            return bookRepository.save(requestForm.registerBook());
+            return bookRepository.save(requestForm.toRegisterBook());
         }
         return null;
     }

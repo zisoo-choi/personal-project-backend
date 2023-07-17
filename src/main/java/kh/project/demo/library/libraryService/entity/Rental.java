@@ -3,9 +3,7 @@ package kh.project.demo.library.libraryService.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import kh.project.demo.library.book.entity.BookState;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -13,6 +11,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Rental {
@@ -30,7 +29,7 @@ public class Rental {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     @CreationTimestamp
-    private LocalDateTime rentalDate = LocalDateTime.now(); // 대여 일자
+    private final LocalDateTime rentalDate = LocalDateTime.now(); // 대여 일자
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     @UpdateTimestamp
@@ -49,6 +48,8 @@ public class Rental {
     private LocalDateTime overdueDate; // 연체 일자
 
     // 회원 대여 상태
+    @Setter
     @Enumerated(EnumType.STRING)
     private BookState bookState;
+
 }

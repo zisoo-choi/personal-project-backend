@@ -3,6 +3,7 @@ package kh.project.demo.library.book.controller.form;
 import kh.project.demo.library.book.controller.form.request.RegisterBookForm;
 import kh.project.demo.library.book.controller.form.request.RequestBookBoardForm;
 import kh.project.demo.library.book.entity.Book;
+import kh.project.demo.library.book.entity.KoreanDecimalClassification;
 import kh.project.demo.library.book.service.BookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +48,14 @@ public class BookController {
     public List<Book> newBook() {
         log.info("신간 도서 요청 !");
         return bookService.registerationDateSort();
+    }
+
+    // 분야별 도서 요청
+    @GetMapping("/{categorizationSymbol}")
+    public List<Book> categoryBook(
+            @PathVariable("categorizationSymbol") KoreanDecimalClassification categorizationSymbol) {
+        log.info("분야별 도서 요청 !");
+        return bookService.listByfield(categorizationSymbol);
     }
 
 }

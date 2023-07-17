@@ -3,6 +3,7 @@ package kh.project.demo.library.book.service;
 import kh.project.demo.library.book.controller.form.request.RegisterBookForm;
 import kh.project.demo.library.book.controller.form.request.RequestBookBoardForm;
 import kh.project.demo.library.book.entity.Book;
+import kh.project.demo.library.book.entity.KoreanDecimalClassification;
 import kh.project.demo.library.book.repository.BookRepository;
 import kh.project.demo.library.member.entity.Member;
 import kh.project.demo.library.member.entity.MemberRole;
@@ -115,6 +116,14 @@ public class BookServiceImpl implements BookService{
     public List<Book> registerationDateSort(){
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "registrationDate");
         Page<Book> bookPage = bookRepository.findAll(pageable);
+        return bookPage.getContent();
+    }
+
+    // 목록 별 리스트
+    @Override
+    public List<Book> listByfield(KoreanDecimalClassification categorizationSymbol) {
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "categorizationSymbol");
+        Page<Book> bookPage = bookRepository.findByCategorizationSymbol(categorizationSymbol, pageable);
         return bookPage.getContent();
     }
 }

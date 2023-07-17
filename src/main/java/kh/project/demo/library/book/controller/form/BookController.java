@@ -1,6 +1,7 @@
 package kh.project.demo.library.book.controller.form;
 
 import kh.project.demo.library.book.controller.form.request.RegisterBookForm;
+import kh.project.demo.library.book.controller.form.request.RequestBookBoardForm;
 import kh.project.demo.library.book.entity.Book;
 import kh.project.demo.library.book.service.BookService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,15 @@ public class BookController {
     @PostMapping("/register-book")
     public boolean registerBook(@RequestBody RegisterBookForm requestForm) {
         return bookService.registerationBook(requestForm);
+    }
+
+    // 도서 수정
+    @PutMapping("/{bookNumber}")
+    public Book modifyBook (@PathVariable("bookNumber") Long bookNumber,
+                            @RequestBody RequestBookBoardForm requestBookBoardForm) {
+        log.info("modifyBook(): "+ requestBookBoardForm +", id: "+bookNumber);
+
+        return bookService.modify(bookNumber, requestBookBoardForm);
     }
 
     @GetMapping("/registration-date")

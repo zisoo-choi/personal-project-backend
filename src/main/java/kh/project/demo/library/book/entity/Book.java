@@ -10,12 +10,13 @@ import java.time.LocalDateTime;
 
 @Getter
 @Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Book {
 
     @Id
-    @Column(name = "BookNumber")
+    @Column(name = "bookNumber")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookNumber; // 도서 번호
 
@@ -39,10 +40,15 @@ public class Book {
     private KoreanDecimalClassification categorizationSymbol; // 분류 기호 -> 한국 십진 분류표
 
     @Setter
+    @Enumerated(EnumType.STRING)
+    private BookState bookState; // 도서 상태
+
+    @Setter
     private Integer bookAmount;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     @CreationTimestamp
+    @Builder.Default // 추가: 초기화 식을 기본값으로 사용
     private LocalDateTime registrationDate = LocalDateTime.now();
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")

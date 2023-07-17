@@ -23,7 +23,7 @@ public class BookController {
     // 도서 등록
     @PostMapping("/register-book")
     public Book registerBook(@RequestBody RegisterBookForm requestForm) {
-        return bookService.registerationBook(requestForm);
+        return bookService.register(requestForm);
     }
 
     // 도서 수정
@@ -35,6 +35,14 @@ public class BookController {
         return bookService.modify(bookNumber, requestBookBoardForm);
     }
 
+    // 도서 삭제
+    @DeleteMapping("/{bookNumber}")
+    public boolean deleteBook (@PathVariable("bookNumber") Long bookNumber) {
+        log.info("deleteBook()");
+        return bookService.delete(bookNumber);
+    }
+
+    // 신간 도서 요청
     @GetMapping("/registration-date")
     public List<Book> newBook(@AuthenticationPrincipal UserDetails userDetail) {
         log.info(userDetail.getUsername());

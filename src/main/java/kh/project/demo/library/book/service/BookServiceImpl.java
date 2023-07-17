@@ -24,7 +24,7 @@ public class BookServiceImpl implements BookService{
     final private MemberRepository memberRepository;
 
     @Override
-    public Book registerationBook(RegisterBookForm requestForm) {
+    public Book register(RegisterBookForm requestForm) {
         // 등록하는 사람의 역할 검증
         Optional<Member> mayMember = memberRepository.findByMemberNumber(requestForm.getRegisterManagerNumber());
 
@@ -95,6 +95,12 @@ public class BookServiceImpl implements BookService{
         }
         log.info("해당 도서 정보가 없습니다.");
         return null;
+    }
+
+    @Override
+    public boolean delete(Long bookNumber){
+        bookRepository.deleteById(bookNumber);
+        return true;
     }
 
     @Override

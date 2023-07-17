@@ -11,7 +11,8 @@ import lombok.RequiredArgsConstructor;
 public class RegisterBookForm {
 
     private String bookName;
-    private String isbn;
+//    private String isbn;
+    private Long registerManagerNumber; // 등록 관리자 번호
     private String author;
     private String publicCompany;
     private String content;
@@ -21,7 +22,7 @@ public class RegisterBookForm {
 
     public Book registerBook() {
         return new Book(
-                isbn, bookName, author, publicCompany,
+                registerManagerNumber, bookName, author, publicCompany,
                 content, categorizationSymbol, bookAmount);
     }
 }

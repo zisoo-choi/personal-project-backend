@@ -22,8 +22,12 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookNumber; // 도서 번호
 
-    @Column(name="isbn" , unique=true)
-    private String isbn; // 국제 표준 도서 번호
+    @JoinColumn(name = "memberNumber")
+    private Long registerManagerNumber; // 등록 관리자 번호
+
+//    @Column(name="isbn" , unique=true)
+//    private String isbn; // 국제 표준 도서 번호
+    // --> 이거 대신에 그냥 도서 번호를 사용해도 좋을 것 같다는 생각 중
 
     private String bookName;
 
@@ -33,8 +37,6 @@ public class Book {
 
     @Setter
     private String content;
-
-//    private String categorizationSymbol;
 
     @Enumerated(EnumType.STRING)
     private KoreanDecimalClassification categorizationSymbol; // 분류 기호 -> 한국 십진 분류표
@@ -50,8 +52,9 @@ public class Book {
     @UpdateTimestamp
     private LocalDateTime updateDate; // 업데이트 일자
 
-    public Book(String isbn, String bookName, String author, String publishCompany, String content, KoreanDecimalClassification categorizationSymbol, Integer bookAmount) {
-        this.isbn = "BOOK_"+isbn;
+    public Book(Long registerManagerNumber, String bookName, String author, String publishCompany, String content, KoreanDecimalClassification categorizationSymbol, Integer bookAmount) {
+        this.registerManagerNumber = registerManagerNumber;
+//        this.isbn = "BOOK_"+isbn;
         this.bookName = bookName;
         this.author = author;
         this.publishCompany = publishCompany;
@@ -60,7 +63,7 @@ public class Book {
         this.bookAmount = bookAmount;
     }
 
-    public void bookAddAmount (Integer plusBook) {
-        this.bookAmount += plusBook;
+    public void bookAddAmount () {
+        this.bookAmount += 1;
     }
 }

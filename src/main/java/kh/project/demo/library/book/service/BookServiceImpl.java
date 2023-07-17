@@ -9,6 +9,10 @@ import kh.project.demo.library.member.entity.MemberRole;
 import kh.project.demo.library.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,6 +27,7 @@ public class BookServiceImpl implements BookService{
     final private BookRepository bookRepository;
     final private MemberRepository memberRepository;
 
+    // 도서 등록
     @Override
     public Book register(RegisterBookForm requestForm) {
         // 등록하는 사람의 역할 검증
@@ -63,6 +68,7 @@ public class BookServiceImpl implements BookService{
         return null;
     }
 
+    // 도서 수정
     @Override
     public Book modify(Long bookNumber, RequestBookBoardForm requestBookBoardForm){
         // 회원 역할 조회
@@ -97,15 +103,18 @@ public class BookServiceImpl implements BookService{
         return null;
     }
 
+    // 도서 삭제
     @Override
     public boolean delete(Long bookNumber){
         bookRepository.deleteById(bookNumber);
         return true;
     }
 
+    // 신간 도서 리스트
     @Override
     public List<Book> registerationDateSort(){
-
-        return null; // 코드 작성해야 함
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "registrationDate");
+        Page<Book> bookPage = bookRepository.findAll(pageable);
+        return bookPage.getContent();
     }
 }

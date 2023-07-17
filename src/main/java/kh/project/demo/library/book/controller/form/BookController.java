@@ -44,15 +44,9 @@ public class BookController {
 
     // 신간 도서 요청
     @GetMapping("/registration-date")
-    public List<Book> newBook(@AuthenticationPrincipal UserDetails userDetail) {
-        log.info(userDetail.getUsername());
+    public List<Book> newBook() {
         log.info("신간 도서 요청 !");
         return bookService.registerationDateSort();
     }
 
-//    @GetMapping("/registration-date2")
-//    public List<Book> newBook2() {
-//        log.info("신간 도서 요청 !");
-//        return bookService.registerationDateSort();
-//    }
 }

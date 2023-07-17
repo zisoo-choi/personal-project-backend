@@ -33,7 +33,7 @@ public class MemberController {
     }
 
     @PostMapping("/sign-up")
-    public Boolean signIn(@RequestBody MemberSignUpForm memberSignUpForm) {
+    public Boolean signUp (@RequestBody MemberSignUpForm memberSignUpForm) {
         log.info("sign Up()");
 
         return memberService.memberSignUp(memberSignUpForm);

@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -109,6 +110,18 @@ public class BookServiceImpl implements BookService{
     public boolean delete(Long bookNumber){
         bookRepository.deleteById(bookNumber);
         return true;
+    }
+
+    // 도서 상세 페이지 읽기
+    @Override
+    public Book read(Long bookNumber) {
+        Optional<Book> maybeBook = bookRepository.findByBookNumber(bookNumber);
+
+        if(maybeBook.isEmpty()) {
+            log.info("존재하지 않는 도서 입니다.");
+            return null;
+        }
+        return maybeBook.get();
     }
 
     // 신간 도서 리스트

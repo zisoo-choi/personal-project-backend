@@ -43,6 +43,13 @@ public class BookController {
         return bookService.delete(bookNumber);
     }
 
+    // 도서 상세 페이지 읽기
+    @GetMapping("read-book/{bookNumber}")
+    public Book readBook (@PathVariable("bookNumber") Long bookNumber) {
+        log.info("readBook()");
+        return bookService.read(bookNumber);
+    }
+
     // 신간 도서 요청
     @GetMapping("/registration-date")
     public List<Book> newBook() {

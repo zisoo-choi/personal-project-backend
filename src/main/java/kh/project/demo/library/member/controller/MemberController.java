@@ -18,7 +18,7 @@ public class MemberController {
 
     final private MemberService memberService;
 
-    @GetMapping("/check-id/{memberId}")
+    @GetMapping("/cheke-id/{memberId}")
     public Boolean checkId(@PathVariable("memberId") String memberId) {
         log.info("check id duplication: "+ memberId);
 

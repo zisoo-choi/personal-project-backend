@@ -65,7 +65,7 @@ public class BookServiceImpl implements BookService{
         if (maybeBook.isEmpty()) {
             // 저장해준다.
             log.info("도서 등록이 완료 되었습니다.");
-            return bookRepository.save(requestForm.toRegisterBook());
+            return bookRepository.save(requestForm.registerBook());
         }
         return null;
     }

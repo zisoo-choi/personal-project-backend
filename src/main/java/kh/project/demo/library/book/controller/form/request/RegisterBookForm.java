@@ -1,7 +1,6 @@
 package kh.project.demo.library.book.controller.form.request;
 
 import kh.project.demo.library.book.entity.Book;
-import kh.project.demo.library.book.entity.BookState;
 import kh.project.demo.library.book.entity.KoreanDecimalClassification;
 import kh.project.demo.library.member.entity.MemberRole;
 import lombok.Getter;
@@ -20,17 +19,10 @@ public class RegisterBookForm {
     private KoreanDecimalClassification categorizationSymbol;
     private Integer bookAmount;
     private MemberRole memberRole; // 등록하는 사용자의 역할
-    private BookState bookState;
 
-    public Book toRegisterBook() {
-        return Book.builder()
-                .managerNumber(registerManagerNumber)
-                .bookName(bookName)
-                .author(author)
-                .publishCompany(publicCompany)
-                .content(content)
-                .categorizationSymbol(categorizationSymbol)
-                .bookState(BookState.BookBefore)
-                .build();
+    public Book registerBook() {
+        return new Book(
+                registerManagerNumber, bookName, author, publicCompany,
+                content, categorizationSymbol, bookAmount);
     }
 }

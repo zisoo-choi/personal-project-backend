@@ -29,6 +29,7 @@ public class MemberServiceImpl implements MemberService{
 
         if (maybeMember.isPresent()) {
             return false;
+
         } else {
             return true;
         }
@@ -59,7 +60,6 @@ public class MemberServiceImpl implements MemberService{
             return false;
         }
 
-        // 비밀번호 암호화
         String encodePassword = new BCryptPasswordEncoder().encode(memberSignUpForm.getMemberPw());
 
         memberRepository.save(memberSignUpForm.toMember(encodePassword));

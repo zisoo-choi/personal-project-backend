@@ -1,7 +1,6 @@
 package kh.project.demo.library.libraryService.controller.form.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import kh.project.demo.library.book.entity.BookState;
 import kh.project.demo.library.libraryService.entity.Rental;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,7 +26,6 @@ public class RentalBookForm {
                 .extensionDate(null)
                 .returnDate(null)
                 .overdueDate(null)
-                .bookState(BookState.BookRental)
                 .build();
     }
 }

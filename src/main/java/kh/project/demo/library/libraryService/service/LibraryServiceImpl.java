@@ -1,7 +1,7 @@
 package kh.project.demo.library.libraryService.service;
 
 import kh.project.demo.library.book.entity.Book;
-import kh.project.demo.library.book.entity.BookState;
+import kh.project.demo.library.libraryService.entity.RentalState;
 import kh.project.demo.library.book.repository.BookRepository;
 import kh.project.demo.library.libraryService.controller.form.request.RentalBookForm;
 import kh.project.demo.library.libraryService.entity.Rental;
@@ -26,38 +26,31 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     public boolean rental(RentalBookForm requestForm) {
-        Optional<Member> maybeMember =
-                memberRepository.findByMemberNumber(requestForm.getMemberNumber());
-        Optional<Book> maybeBook =
-                bookRepository.findByBookNumber(requestForm.getBookNumber());
+        Optional<Book> maybeBook = bookRepository.findByBookNumber(requestForm.getBookNumber());
+        Optional<Member> maybeMember = memberRepository.findByMemberNumber(requestForm.getMemberNumber());
 
-        if(maybeMember.isEmpty() || maybeBook.isEmpty()) {
-            log.info("대여 불가능 합니다. (회원 및 도서 다시 확인 요망)");
+        if(maybeBook.isEmpty()) {
+            log.info("존재하지 않는 도서 입니다.");
             return false;
         }
 
-        // 회원과 도서 모두 존재
-        Member member = maybeMember.get();
         Book book = maybeBook.get();
-        if (member.getMemberServiceState() != null &&
-                member.getMemberServiceState().equals(MemberServiceState.ServiceNormal)) {
-            // 사용자가 빌릴 수 있는 상태라면
-            // 사용자의 상태를 대출 중으로 만들고
-            member.setMemberServiceState(MemberServiceState.ServiceRental);
-            // 상태 저장 (변경된 값 저장과 같음)
-            memberRepository.save(member);
+        Member member = maybeMember.get();
 
-            // 대여 서비스 저장
+        if(book.getBookAmount() != 0) {
             Rental rental = requestForm.toRentalBook();
-            rental.setBookState(BookState.BookRental);
-            book.setBookState(BookState.BookRental);
+            rental.setRentalState(RentalState.BookRental);
+            member.setMemberServiceState(MemberServiceState.ServiceRental);
+
+            book.minusAmount(); // 대여 수량 1 빼기
+            memberRepository.save(member);
             bookRepository.save(book);
             libraryRepository.save(rental);
 
-            log.info("대출이 되었습니다.");
+            log.info("대출 되었습니다.");
             return true;
         }
-
+        log.info("대여 수량이 0 입니다.");
         return false;
     }
 }

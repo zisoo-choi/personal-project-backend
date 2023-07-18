@@ -2,7 +2,6 @@ package kh.project.demo.library.libraryService.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import kh.project.demo.library.book.entity.BookState;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -50,6 +49,6 @@ public class Rental {
     // 회원 대여 상태
     @Setter
     @Enumerated(EnumType.STRING)
-    private BookState bookState;
+    private RentalState rentalState;
 
 }

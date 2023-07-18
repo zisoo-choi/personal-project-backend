@@ -18,4 +18,6 @@ public interface MemberService {
     boolean memberAccountStop(MemberAccountStopForm memberAccountForm);
 
     Boolean checkEmailDuplication(String email);
+
+    Integer inquiryLimitsBook(String userId);
 }

@@ -135,4 +135,16 @@ public class MemberServiceImpl implements MemberService{
         log.info("계정 삭제 실패");
         return false;
     }
+
+    @Override
+    public Integer inquiryLimitsBook(String userId){
+        Optional<Member> maybeMember = memberRepository.findByMemberId(userId);
+
+        if(maybeMember.isEmpty()) {
+            log.info("존재하지 않는 회원입니다.");
+            return null;
+        }
+        Member member = maybeMember.get();
+        return member.getAvailableAmount();
+    }
 }

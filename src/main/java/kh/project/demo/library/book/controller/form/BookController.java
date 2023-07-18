@@ -1,7 +1,7 @@
 package kh.project.demo.library.book.controller.form;
 
 import kh.project.demo.library.book.controller.form.request.RegisterBookForm;
-import kh.project.demo.library.book.controller.form.request.RequestBookBoardForm;
+import kh.project.demo.library.book.controller.form.request.ModifyBookForm;
 import kh.project.demo.library.book.entity.Book;
 import kh.project.demo.library.book.entity.KoreanDecimalClassification;
 import kh.project.demo.library.book.service.BookService;
@@ -28,10 +28,10 @@ public class BookController {
     // 도서 수정
     @PutMapping("/{bookNumber}")
     public Book modifyBook (@PathVariable("bookNumber") Long bookNumber,
-                            @RequestBody RequestBookBoardForm requestBookBoardForm) {
-        log.info("modifyBook(): "+ requestBookBoardForm +", id: "+bookNumber);
+                            @RequestBody ModifyBookForm modifyBookForm) {
+        log.info("modifyBook(): "+ modifyBookForm +", id: "+bookNumber);
 
-        return bookService.modify(bookNumber, requestBookBoardForm);
+        return bookService.modify(bookNumber, modifyBookForm);
     }
 
     // 도서 삭제
@@ -42,7 +42,7 @@ public class BookController {
     }
 
     // 도서 상세 페이지 읽기
-    @GetMapping("read-book/{bookNumber}")
+    @GetMapping("/read-book/{bookNumber}")
     public Book readBook (@PathVariable("bookNumber") Long bookNumber) {
         log.info("readBook()");
         return bookService.read(bookNumber);

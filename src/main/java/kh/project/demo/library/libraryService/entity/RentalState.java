@@ -1,6 +1,6 @@
-package kh.project.demo.library.book.entity;
+package kh.project.demo.library.libraryService.entity;
 
-public enum BookState {
+public enum RentalState {
     BookBefore, // 대출전 (정상)
     BookRental, // 대출 (정상)
     BookDelinquency, // 연체 (비정상)

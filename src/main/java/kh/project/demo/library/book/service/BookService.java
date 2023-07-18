@@ -1,14 +1,14 @@
 package kh.project.demo.library.book.service;
 
 import kh.project.demo.library.book.controller.form.request.RegisterBookForm;
-import kh.project.demo.library.book.controller.form.request.RequestBookBoardForm;
+import kh.project.demo.library.book.controller.form.request.ModifyBookForm;
 import kh.project.demo.library.book.entity.Book;
 import kh.project.demo.library.book.entity.KoreanDecimalClassification;
 
 import java.util.List;
 
 public interface BookService {
-    Book modify(Long bookId, RequestBookBoardForm requestBookBoardForm);
+    Book modify(Long bookId, ModifyBookForm modifyBookForm);
 
     Book register(RegisterBookForm requestForm);
 

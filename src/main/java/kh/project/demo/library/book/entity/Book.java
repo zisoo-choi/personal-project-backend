@@ -40,11 +40,7 @@ public class Book {
     private KoreanDecimalClassification categorizationSymbol; // 분류 기호 -> 한국 십진 분류표
 
     @Setter
-    @Enumerated(EnumType.STRING)
-    private BookState bookState; // 도서 상태
-
-    @Setter
-    private Integer bookAmount;
+    private Integer bookAmount; // 전체 도서 권 수
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     @CreationTimestamp
@@ -55,18 +51,20 @@ public class Book {
     @UpdateTimestamp
     private LocalDateTime updateDate; // 업데이트 일자
 
-    public Book(Long managerNumber, String bookName, String author, String publishCompany, String content, KoreanDecimalClassification categorizationSymbol, Integer bookAmount) {
-        this.managerNumber = managerNumber;
-//        this.isbn = "BOOK_"+isbn;
-        this.bookName = bookName;
-        this.author = author;
-        this.publishCompany = publishCompany;
-        this.content = content;
-        this.categorizationSymbol = categorizationSymbol;
-        this.bookAmount = bookAmount;
-    }
+//    public Book(Long managerNumber, String bookName, String author,
+//                String publishCompany, String content,
+//                KoreanDecimalClassification categorizationSymbol, Integer bookAmount) {
+//        this.managerNumber = managerNumber;
+////        this.isbn = "BOOK_"+isbn;
+//        this.bookName = bookName;
+//        this.author = author;
+//        this.publishCompany = publishCompany;
+//        this.content = content;
+//        this.categorizationSymbol = categorizationSymbol;
+//        this.bookAmount = bookAmount;
+//    }
 
-    public void bookAddAmount () {
-        this.bookAmount += 1;
+    public void minusAmount () {
+        this.bookAmount -= 1;
     }
 }

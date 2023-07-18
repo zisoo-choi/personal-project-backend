@@ -1,7 +1,7 @@
 package kh.project.demo.library.book.service;
 
 import kh.project.demo.library.book.controller.form.request.RegisterBookForm;
-import kh.project.demo.library.book.controller.form.request.RequestBookBoardForm;
+import kh.project.demo.library.book.controller.form.request.ModifyBookForm;
 import kh.project.demo.library.book.entity.Book;
 import kh.project.demo.library.book.entity.KoreanDecimalClassification;
 import kh.project.demo.library.book.repository.BookRepository;
@@ -31,77 +31,41 @@ public class BookServiceImpl implements BookService{
     // 도서 등록
     @Override
     public Book register(RegisterBookForm requestForm) {
-        // 등록하는 사람의 역할 검증
-        Optional<Member> mayMember = memberRepository.findByMemberNumber(requestForm.getRegisterManagerNumber());
-
-        if (mayMember.isPresent()) {
-            Member member = mayMember.get();
-            if (member.getMemberRole().equals(MemberRole.NORMAL)) {
-                log.info("관리자가 아니므로 권한이 없습니다.");
-                return null;
-            }
-        }
-
-        // 도서 존재 여부 확인 후, 존재 시 수량 증가 (현재 원하는 대로 구동 안되고 있음)
         Optional<Book> maybeBook = bookRepository.findByBookName(requestForm.getBookName());
-
-        if (maybeBook.isPresent()) {
-            // 받아온 도서의 새 객체를 만들어 줌
-            Book book = maybeBook.get();
-
-            // 기존 책과 동일한 책인 지 비교하기
-            if (book.getBookName().equals(maybeBook.get().getBookName())
-                    && book.getAuthor().equals(maybeBook.get().getAuthor())
-            ) {
-                book.bookAddAmount();
-                bookRepository.save(book); // 수정된 도서 정보 저장
-                log.info("존재하는 도서 이므로 수량이 증가합니다.");
-                return null;
-            }
-        }
-
-        // 존재하지 않는 도서라면
+        // 존재하지 않는 도서라면 도서 등록
         if (maybeBook.isEmpty()) {
-            // 저장해준다.
+            Book book = requestForm.toRegisterBook();
             log.info("도서 등록이 완료 되었습니다.");
-            return bookRepository.save(requestForm.toRegisterBook());
+            return bookRepository.save(book);
         }
         return null;
     }
 
     // 도서 수정
     @Override
-    public Book modify(Long bookNumber, RequestBookBoardForm requestBookBoardForm){
+    public Book modify(Long bookNumber, ModifyBookForm modifyBookForm){
+        // -> 예외 처리로 정리
+
         // 회원 역할 조회
-        Optional<Member> maybeMember = memberRepository.findByMemberNumber(requestBookBoardForm.getManagerNumber());
+        Member member = memberRepository.findByMemberNumber(modifyBookForm.getManagerNumber()).orElseThrow(() -> {
+            throw new RuntimeException("존재 하지 않는 사용자");
+        });
 
-        if(maybeMember.isPresent()) {
-            Member member = maybeMember.get();
-            if(member.getMemberRole().equals(MemberRole.NORMAL)) {
-                log.info("권한이 없는 사용자 입니다.");
-                return null;
-            }
+        if (member.getMemberRole().equals(MemberRole.NORMAL)) {
+            throw new RuntimeException("권한이 없는 사용자");
         }
 
-        // 도서 존재 여부 확인
-        Optional<Book> maybeBook = bookRepository.findByBookNumber(bookNumber);
+        Book book = bookRepository.findByBookNumber(bookNumber).orElseThrow(() -> {
+            throw new RuntimeException("존재 하지 않는 사용자");
+        });
 
-        if(maybeBook.isEmpty()) {
-            log.info("해당 도서 정보가 없습니다.");
-            return null;
-        }
+        // 수정 부분
+        book.setBookAmount(modifyBookForm.getBookAmount());
+        book.setContent(modifyBookForm.getContent());
+        modifyBookForm.setUpdateDate(LocalDateTime.now());
 
-        if(maybeBook.isPresent()) {
-            // 수정 부분
-            Book book = maybeBook.get();
-            book.setBookAmount(requestBookBoardForm.getBookAmount());
-            book.setContent(requestBookBoardForm.getContent());
-            requestBookBoardForm.setUpdateDate(LocalDateTime.now());
-            log.info("도서 수정 완료 !");
-            return bookRepository.save(book);
-        }
-        log.info("해당 도서 정보가 없습니다.");
-        return null;
+        log.info("도서 수정 완료 !");
+        return bookRepository.save(book);
     }
 
     // 도서 삭제

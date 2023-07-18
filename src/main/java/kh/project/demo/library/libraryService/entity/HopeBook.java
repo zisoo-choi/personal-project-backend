@@ -1,4 +1,4 @@
-package kh.project.demo.library.member.entity;
+package kh.project.demo.library.libraryService.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;

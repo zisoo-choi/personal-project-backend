@@ -15,4 +15,5 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     Optional<Book> findByBookNumber(Long bookNumber);
 
     Page<Book> findByCategorizationSymbol(KoreanDecimalClassification categorizationSymbol, Pageable pageable);
+
 }

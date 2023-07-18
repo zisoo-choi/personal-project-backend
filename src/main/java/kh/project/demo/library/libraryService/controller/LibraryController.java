@@ -1,5 +1,6 @@
 package kh.project.demo.library.libraryService.controller;
 
+import kh.project.demo.library.libraryService.controller.form.request.HopeBookForm;
 import kh.project.demo.library.libraryService.controller.form.request.RentalBookForm;
 import kh.project.demo.library.libraryService.service.LibraryService;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,20 @@ public class LibraryController {
             return libraryService.rental(requestForm, userId);
         }
 
+        return false;
+    }
+
+    // 사용자 희망 도서 신청
+    @PostMapping("/hope-book")
+    public boolean HopeBook(
+            @RequestBody HopeBookForm requestForm,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        log.info("HopeBook()");
+
+        if(userDetails != null) {
+            String userId = userDetails.getUsername();
+            return libraryService.applicationBook(requestForm, userId);
+        }
         return false;
     }
 

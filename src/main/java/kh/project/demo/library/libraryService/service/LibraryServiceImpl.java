@@ -1,10 +1,13 @@
 package kh.project.demo.library.libraryService.service;
 
 import kh.project.demo.library.book.entity.Book;
+import kh.project.demo.library.libraryService.controller.form.request.HopeBookForm;
+import kh.project.demo.library.libraryService.entity.HopeBook;
 import kh.project.demo.library.libraryService.entity.RentalState;
 import kh.project.demo.library.book.repository.BookRepository;
 import kh.project.demo.library.libraryService.controller.form.request.RentalBookForm;
 import kh.project.demo.library.libraryService.entity.Rental;
+import kh.project.demo.library.libraryService.repository.HopeBookRepository;
 import kh.project.demo.library.libraryService.repository.LibraryRepository;
 import kh.project.demo.library.member.entity.Member;
 import kh.project.demo.library.member.entity.MemberServiceState;
@@ -23,6 +26,7 @@ public class LibraryServiceImpl implements LibraryService {
     final private LibraryRepository libraryRepository;
     final private MemberRepository memberRepository;
     final private BookRepository bookRepository;
+    final private HopeBookRepository hopeBookRepository;
 
     @Override
     public boolean rental(RentalBookForm requestForm, String userId) {
@@ -53,6 +57,41 @@ public class LibraryServiceImpl implements LibraryService {
         }
         log.info("대여 수량이 0 입니다.");
         return false;
+    }
+
+    @Override
+    public boolean applicationBook(HopeBookForm requestForm, String userId){
+        Optional<Book> maybeBook = bookRepository.findByBookName(requestForm.getBookName());
+        Optional<Member> maybeMember = memberRepository.findByMemberId(userId);
+
+        // 1. 도서 이름이 같은 경우
+        if(maybeBook.isPresent()) {
+            // 도서 작가 확인
+            Book book = maybeBook.get();
+            if(book.getAuthor().equals(requestForm.getAuthor())){
+                log.info("존재하는 도서이므로 희망 도서 신청이 불가능 합니다.");
+                return false;
+            }
+
+            // 어떤 회원이 신청했는 지 확인
+            if(maybeMember.isPresent()) {
+                Member member = maybeMember.get();
+                hopeBookRepository.save(requestForm.toHopeBook(member.getMemberNumber()));
+                log.info("존재하지 않는 도서이므로 희망 도서 신청 되었습니다.");
+                return true;
+            }
+        }
+
+        // -> 아래 코드를 안 넣어주면 경고가 있는 듯 함
+        if(maybeMember.isEmpty()) {
+            log.info("존재하지 않는 회원입니다.");
+            return false;
+        }
+
+        // 2. 도서 이름이 다른 경우
+        hopeBookRepository.save(requestForm.toHopeBook(maybeMember.get().getMemberNumber()));
+        log.info("존재하지 않는 도서이므로 희망 도서 신청 되었습니다.");
+        return true;
     }
 
 }

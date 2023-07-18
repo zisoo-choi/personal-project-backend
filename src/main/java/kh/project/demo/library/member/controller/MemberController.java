@@ -18,13 +18,15 @@ public class MemberController {
 
     final private MemberService memberService;
 
-    @GetMapping("/cheke-id/{memberId}")
+    // 아이디 중복 확인
+    @GetMapping("/check-id/{memberId}")
     public Boolean checkId(@PathVariable("memberId") String memberId) {
         log.info("check id duplication: "+ memberId);
 
         return memberService.checkIdDuplication(memberId);
     }
 
+    // 이메일 중복 확인
     @GetMapping("/check-email/{email}")
     public Boolean checkEmail(@PathVariable("email") String email) {
         log.info("check email duplication: "+ email);
@@ -32,6 +34,7 @@ public class MemberController {
         return memberService.checkEmailDuplication(email);
     }
 
+    // 회원 가입
     @PostMapping("/sign-up")
     public Boolean signUp (@RequestBody MemberSignUpForm memberSignUpForm) {
         log.info("sign Up()");
@@ -39,6 +42,7 @@ public class MemberController {
         return memberService.memberSignUp(memberSignUpForm);
     }
 
+    // 로그인
     @PostMapping("/sign-in")
     public MemberLoginRespnseForm signIn(@RequestBody MemberBasicForm memberSignInForm) {
         log.info("sign in()");
@@ -46,6 +50,7 @@ public class MemberController {
         return memberService.memberSignIn(memberSignInForm);
     }
 
+    // 회원 삭제
     @DeleteMapping("/member-delete")
     public boolean MemberDelete(@RequestBody MemberBasicForm memberDeleteForm) {
         log.info("member delete()");
@@ -53,6 +58,7 @@ public class MemberController {
         return memberService.memberDelete(memberDeleteForm);
     }
 
+    // 회원 계정 정지
     @PostMapping("/member-account-stop")
     public boolean MemberAccountStop(@RequestBody MemberAccountStopForm memberAccountForm) {
         log.info("member account stop");

@@ -65,8 +65,10 @@ public class SecurityConfig {
         // URI 별 접근 권한 설정 @PreAuthorize 로 도 설정 가능
         http.authorizeHttpRequests((authorizeRequests) -> {
             authorizeRequests.requestMatchers("/library-member/sign-up", "/library-member/sign-in").anonymous();
-            authorizeRequests.requestMatchers("/book-list/register-book", "/book-list/{bookNumber}").hasAnyRole("MANAGER");
-            authorizeRequests.requestMatchers("/book-list/registration-date").hasAnyRole("NORMAL", "MANAGER");
+            authorizeRequests.requestMatchers(
+                    "/book-list/register-book", "/book-list/{bookNumber}", "/library-member/member-account-stop"
+            ).hasAnyRole("MANAGER");
+            authorizeRequests.requestMatchers("/library-service/rental").hasAnyRole("NORMAL", "MANAGER");
             authorizeRequests.anyRequest().permitAll(); // 모두 접근 가능
         });
 

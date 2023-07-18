@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 @RequiredArgsConstructor
-public class RequestBookBoardForm {
+public class ModifyBookForm {
 
     final private String content;
     final private Integer bookAmount;

@@ -6,6 +6,7 @@ import kh.project.demo.library.member.controller.form.request.MemberSignUpForm;
 import kh.project.demo.library.member.controller.form.request.MemberAccountStopForm;
 import kh.project.demo.library.member.controller.form.response.MemberLoginRespnseForm;
 import kh.project.demo.library.member.service.MemberService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,12 @@ public class MemberController {
 
         return memberService.checkEmailDuplication(email);
     }
+
+    // 회원 대여 가능 도서 수
+//    @GetMapping("/check-amount/{memberId}")
+//    public Integer checkAmount() {
+//
+//    }
 
     // 회원 가입
     @PostMapping("/sign-up")

@@ -39,4 +39,11 @@ public class Member {
     @Setter
     @Enumerated(EnumType.STRING)
     private MemberServiceState memberServiceState;
+
+    @Setter
+    private Integer availableAmount; // 회원이 동시에 대여할 수 있는 한도 수
+
+    public void minusAmount () {
+        this.availableAmount -= 1;
+    }
 }

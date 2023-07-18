@@ -25,11 +25,11 @@ public class LibraryServiceImpl implements LibraryService {
     final private BookRepository bookRepository;
 
     @Override
-    public boolean rental(RentalBookForm requestForm) {
+    public boolean rental(RentalBookForm requestForm, String userId) {
         Optional<Book> maybeBook = bookRepository.findByBookNumber(requestForm.getBookNumber());
-        Optional<Member> maybeMember = memberRepository.findByMemberNumber(requestForm.getMemberNumber());
+        Optional<Member> maybeMember = memberRepository.findByMemberId(userId);
 
-        if(maybeBook.isEmpty()) {
+        if (maybeBook.isEmpty()) {
             log.info("존재하지 않는 도서 입니다.");
             return false;
         }
@@ -37,12 +37,13 @@ public class LibraryServiceImpl implements LibraryService {
         Book book = maybeBook.get();
         Member member = maybeMember.get();
 
-        if(book.getBookAmount() != 0) {
-            Rental rental = requestForm.toRentalBook();
+        if (book.getBookAmount() > 0) {
+            Rental rental = requestForm.toRentalBook(member.getMemberNumber());
             rental.setRentalState(RentalState.BookRental);
             member.setMemberServiceState(MemberServiceState.ServiceRental);
 
-            book.minusAmount(); // 대여 수량 1 빼기
+            book.minusAmount(); // 도서 대여 수량 1 감소
+            member.minusAmount(); // 회원의 대여 수량 1 감소
             memberRepository.save(member);
             bookRepository.save(book);
             libraryRepository.save(rental);
@@ -53,4 +54,5 @@ public class LibraryServiceImpl implements LibraryService {
         log.info("대여 수량이 0 입니다.");
         return false;
     }
+
 }

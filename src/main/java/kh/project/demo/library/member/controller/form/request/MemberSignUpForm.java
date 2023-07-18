@@ -30,6 +30,7 @@ public class MemberSignUpForm {
                 .memberRole(memberRole)
                 .memberState(MemberState.OK)
                 .memberServiceState(MemberServiceState.ServiceNormal)
+                .availableAmount(5)
                 .build();
     }
 }

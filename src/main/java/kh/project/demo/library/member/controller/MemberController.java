@@ -1,5 +1,7 @@
 package kh.project.demo.library.member.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import kh.project.demo.library.member.controller.form.request.MemberBasicForm;
 import kh.project.demo.library.member.controller.form.request.MemberSignUpForm;
 import kh.project.demo.library.member.controller.form.request.MemberAccountStopForm;
@@ -44,13 +46,13 @@ public class MemberController {
         return memberService.memberSignUp(memberSignUpForm);
     }
 
-    // 로그인
-    @PostMapping("/sign-in")
-    public MemberLoginRespnseForm signIn(@RequestBody MemberBasicForm memberSignInForm) {
-        log.info("sign in()");
-
-        return memberService.memberSignIn(memberSignInForm);
-    }
+    // 로그인 -> 이 부분은 시큐리티 + jwt 해주면서 설정해놨음
+//    @PostMapping("/sign-in")
+//    public MemberLoginRespnseForm signIn(@RequestBody MemberBasicForm memberSignInForm) {
+//        log.info("sign in()");
+//
+//        return memberService.memberSignIn(memberSignInForm);
+//    }
 
     // 회원 삭제
     @DeleteMapping("/member-delete")
@@ -80,5 +82,4 @@ public class MemberController {
         }
         return null;
     }
-
 }

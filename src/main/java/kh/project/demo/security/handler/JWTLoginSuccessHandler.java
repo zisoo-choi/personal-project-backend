@@ -27,7 +27,7 @@ public class JWTLoginSuccessHandler implements AuthenticationSuccessHandler {
         String refresh = jwtUtil.generateToken(Map.of("memberId", memberId), 30);
 
         // 응답 생성
-        response.setContentType("application/json");
+        response.setContentType("/application/json");
         PrintWriter out = response.getWriter();
         Gson gson = new Gson();
         String jsonStr = gson.toJson(Map.of("accessToken", access, "refreshToken", refresh));

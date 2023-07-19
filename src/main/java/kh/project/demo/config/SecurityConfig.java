@@ -64,9 +64,18 @@ public class SecurityConfig {
 
         // URI 별 접근 권한 설정 @PreAuthorize 로 도 설정 가능
         http.authorizeHttpRequests((authorizeRequests) -> {
-            authorizeRequests.requestMatchers("/library-member/sign-up", "/library-member/sign-in").anonymous();
             authorizeRequests.requestMatchers(
-                    "/book-list/register-book", "/book-list/{bookNumber}", "/library-member/member-account-stop"
+                    "/library-member/sign-up",
+                    "/application/json",
+                    "/library-member/check-id/{memberId}",
+                    "/library-member/check-email/{email}",
+                    "/email-authentication/send-email",
+                    "/email-authentication/authentication-code"
+            ).anonymous();
+            authorizeRequests.requestMatchers(
+                    "/book-list/register-book",
+                    "/book-list/{bookNumber}",
+                    "/library-member/member-account-stop"
             ).hasAnyRole("MANAGER");
             authorizeRequests.requestMatchers("/library-service/rental").hasAnyRole("NORMAL", "MANAGER");
             authorizeRequests.anyRequest().permitAll(); // 모두 접근 가능
@@ -79,7 +88,7 @@ public class SecurityConfig {
         http.authenticationManager(authenticationManager);
 
         // JWT 로그인용 필터 등록
-        JWTLoginFilter jwtLoginFilter = new JWTLoginFilter("/library-member/sign-in");
+        JWTLoginFilter jwtLoginFilter = new JWTLoginFilter("/application/json");
         jwtLoginFilter.setAuthenticationManager(authenticationManager); // AuthenticationManager 설정 - 반드시 필요
         jwtLoginFilter.setAuthenticationSuccessHandler(new JWTLoginSuccessHandler(jwtUtil)); // 성공 핸들러 등록
         jwtLoginFilter.setAuthenticationFailureHandler(new JWTLoginFailHandler()); // 실패 핸들러 등록

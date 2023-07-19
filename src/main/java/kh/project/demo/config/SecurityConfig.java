@@ -67,16 +67,14 @@ public class SecurityConfig {
             authorizeRequests.requestMatchers(
                     "/library-member/sign-up",
                     "/application/json",
-                    "/library-member/check-id/{memberId}",
-                    "/library-member/check-email/{email}",
+                    "/library-member/check-id",
+                    "/library-member/check-email",
                     "/email-authentication/send-email",
-                    "/email-authentication/authentication-code"
-            ).anonymous();
+                    "/email-authentication/authentication-code").anonymous();
             authorizeRequests.requestMatchers(
                     "/book-list/register-book",
                     "/book-list/{bookNumber}",
-                    "/library-member/member-account-stop"
-            ).hasAnyRole("MANAGER");
+                    "/library-member/member-account-stop").hasAnyRole("MANAGER");
             authorizeRequests.requestMatchers("/library-service/rental").hasAnyRole("NORMAL", "MANAGER");
             authorizeRequests.anyRequest().permitAll(); // 모두 접근 가능
         });

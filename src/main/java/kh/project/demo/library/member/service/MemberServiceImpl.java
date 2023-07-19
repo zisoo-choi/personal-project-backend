@@ -3,7 +3,6 @@ package kh.project.demo.library.member.service;
 import kh.project.demo.library.member.controller.form.request.MemberAccountStopForm;
 import kh.project.demo.library.member.controller.form.request.MemberBasicForm;
 import kh.project.demo.library.member.controller.form.request.MemberSignUpForm;
-import kh.project.demo.library.member.controller.form.response.MemberLoginRespnseForm;
 import kh.project.demo.library.member.entity.Member;
 import kh.project.demo.library.member.entity.MemberRole;
 import kh.project.demo.library.member.entity.MemberState;
@@ -14,7 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -57,35 +55,11 @@ public class MemberServiceImpl implements MemberService{
             return false;
         }
 
+        // 비밀번호 암호화
         String encodePassword = new BCryptPasswordEncoder().encode(memberSignUpForm.getMemberPw());
 
         memberRepository.save(memberSignUpForm.toMember(encodePassword));
         return true;
-    }
-
-    @Override
-    public MemberLoginRespnseForm memberSignIn(MemberBasicForm memberSignInForm){
-        final Optional<Member> maybeMember = memberRepository.findByMemberId(memberSignInForm.getMemberId());
-
-        if (maybeMember.isEmpty()) {
-            log.info("로그인 실패!");
-            return new MemberLoginRespnseForm(null);
-        }
-
-        Member member = maybeMember.get();
-
-        if (member.getMemberState().equals(MemberState.OK)) {
-            if (member.getMemberPw().equals(memberSignInForm.getMemberPw())) {
-                log.info("로그인 성공!");
-                return new MemberLoginRespnseForm(UUID.randomUUID());
-            }
-        } else {
-            log.info("계정이 정지된 회원입니다.");
-            return new MemberLoginRespnseForm(null);
-        }
-
-        log.info("로그인 실패!");
-        return new MemberLoginRespnseForm(null);
     }
 
     @Override

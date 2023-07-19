@@ -71,7 +71,8 @@ public class SecurityConfig {
                     "/library-member/check-email",
                     "/email-authentication/send-email",
                     "/book-list/whole-book",
-                    "/email-authentication/authentication-code").anonymous();
+                    "/email-authentication/authentication-code",
+                    "/book-list/{categorizationSymbol}").anonymous();
             authorizeRequests.requestMatchers(
                     "/book-list/register-book",
                     "/book-list/{bookNumber}",

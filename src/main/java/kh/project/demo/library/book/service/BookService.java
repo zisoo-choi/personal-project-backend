@@ -19,4 +19,6 @@ public interface BookService {
     List<Book> listByfield(KoreanDecimalClassification categorizationSymbol);
 
     Book read(Long bookNumber);
+
+    List<Book> list();
 }

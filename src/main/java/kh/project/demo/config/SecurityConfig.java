@@ -70,12 +70,14 @@ public class SecurityConfig {
                     "/library-member/check-id",
                     "/library-member/check-email",
                     "/email-authentication/send-email",
+                    "/book-list/whole-book",
                     "/email-authentication/authentication-code").anonymous();
             authorizeRequests.requestMatchers(
                     "/book-list/register-book",
                     "/book-list/{bookNumber}",
-                    "/library-member/member-account-stop").hasAnyRole("MANAGER");
-            authorizeRequests.requestMatchers("/library-service/rental").hasAnyRole("NORMAL", "MANAGER");
+                    "/library-member/member-account-stop"
+                    ).hasAnyRole("MANAGER");
+            authorizeRequests.requestMatchers("/library-service/rental", "/library-service/hope-book").hasAnyRole("NORMAL", "MANAGER");
             authorizeRequests.anyRequest().permitAll(); // 모두 접근 가능
         });
 

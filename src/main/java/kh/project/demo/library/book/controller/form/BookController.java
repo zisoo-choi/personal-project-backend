@@ -7,8 +7,6 @@ import kh.project.demo.library.book.entity.KoreanDecimalClassification;
 import kh.project.demo.library.book.service.BookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -63,6 +61,14 @@ public class BookController {
             @PathVariable("categorizationSymbol") KoreanDecimalClassification categorizationSymbol) {
         log.info("분야별 도서 요청 !");
         return bookService.listByfield(categorizationSymbol);
+    }
+
+    @GetMapping("/whole-book")
+    public List<Book> wholeBook() {
+        log.info("전체 도서 목록 요청 !");
+
+        List<Book> returnedBookList = bookService.list();
+        return returnedBookList;
     }
 
 }

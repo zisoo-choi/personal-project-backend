@@ -102,4 +102,10 @@ public class BookServiceImpl implements BookService{
         Page<Book> bookPage = bookRepository.findByCategorizationSymbol(categorizationSymbol, pageable);
         return bookPage.getContent();
     }
+
+    // 전체 도서 목록
+    @Override
+    public List<Book> list(){
+        return bookRepository.findAll(Sort.by(Sort.Direction.DESC, "bookNumber"));
+    }
 }

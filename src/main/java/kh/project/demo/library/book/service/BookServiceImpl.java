@@ -30,42 +30,51 @@ public class BookServiceImpl implements BookService{
 
     // 도서 등록
     @Override
-    public Book register(RegisterBookForm requestForm) {
+    public Book register(RegisterBookForm requestForm, String userId) {
+        Optional<Member> maybeMember = memberRepository.findByMemberId(userId);
         Optional<Book> maybeBook = bookRepository.findByBookName(requestForm.getBookName());
         // 존재하지 않는 도서라면 도서 등록
         if (maybeBook.isEmpty()) {
-            Book book = requestForm.toRegisterBook();
-            log.info("도서 등록이 완료 되었습니다.");
-            return bookRepository.save(book);
+            if (maybeMember.isPresent()){
+                Member member = maybeMember.get();
+                if(member.getMemberRole().equals(MemberRole.NORMAL)){
+                    log.info("권한이 없는 사용자는 도서 등록이 불가합니다.");
+                    return null;
+                }
+                Book book = requestForm.toRegisterBook();
+                log.info("도서 등록이 완료 되었습니다.");
+                return bookRepository.save(book);
+            }
         }
         return null;
     }
 
     // 도서 수정
     @Override
-    public Book modify(Long bookNumber, ModifyBookForm modifyBookForm){
-        // -> 예외 처리로 정리
-
-        // 회원 역할 조회
-        Member member = memberRepository.findByMemberNumber(modifyBookForm.getManagerNumber()).orElseThrow(() -> {
-            throw new RuntimeException("존재 하지 않는 사용자");
-        });
-
-        if (member.getMemberRole().equals(MemberRole.NORMAL)) {
-            throw new RuntimeException("권한이 없는 사용자");
+    public Book modify(Long bookNumber, ModifyBookForm modifyBookForm, String userId){
+        Optional<Member> maybeMember = memberRepository.findByMemberId(userId);
+        Optional<Book> maybeBook = bookRepository.findByBookNumber(bookNumber);
+        if(maybeBook.isEmpty()) {
+            return null;
         }
 
-        Book book = bookRepository.findByBookNumber(bookNumber).orElseThrow(() -> {
-            throw new RuntimeException("존재 하지 않는 사용자");
-        });
+        if(maybeBook.isPresent()) {
+            Member member = maybeMember.get();
+            if(member.getMemberRole().equals(MemberRole.NORMAL)) {
+                log.info("권한이 없는 사용자는 도서 수정이 불가합니다.");
+                return null;
+            }
+            Book book = maybeBook.get();
 
-        // 수정 부분
-        book.setBookAmount(modifyBookForm.getBookAmount());
-        book.setContent(modifyBookForm.getContent());
-        modifyBookForm.setUpdateDate(LocalDateTime.now());
+            // 수정 부분
+            book.setBookAmount(modifyBookForm.getBookAmount());
+            book.setContent(modifyBookForm.getContent());
+            modifyBookForm.setUpdateDate(LocalDateTime.now());
 
-        log.info("도서 수정 완료 !");
-        return bookRepository.save(book);
+            log.info("도서 수정 완료 !");
+            return bookRepository.save(book);
+        }
+        return null;
     }
 
     // 도서 삭제

@@ -14,7 +14,6 @@ public class ModifyBookForm {
 
     final private String content;
     final private Integer bookAmount;
-    final private Long managerNumber;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime updateDate; // 업데이트 일자

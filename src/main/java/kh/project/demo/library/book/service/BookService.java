@@ -8,9 +8,6 @@ import kh.project.demo.library.book.entity.KoreanDecimalClassification;
 import java.util.List;
 
 public interface BookService {
-    Book modify(Long bookId, ModifyBookForm modifyBookForm);
-
-    Book register(RegisterBookForm requestForm);
 
     boolean delete(Long bookNumber);
 
@@ -21,4 +18,8 @@ public interface BookService {
     Book read(Long bookNumber);
 
     List<Book> list();
+
+    Book register(RegisterBookForm requestForm, String userId);
+
+    Book modify(Long bookNumber, ModifyBookForm modifyBookForm, String userId);
 }

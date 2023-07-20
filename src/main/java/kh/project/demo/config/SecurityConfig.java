@@ -65,20 +65,26 @@ public class SecurityConfig {
         // URI 별 접근 권한 설정 @PreAuthorize 로 도 설정 가능
         http.authorizeHttpRequests((authorizeRequests) -> {
             authorizeRequests.requestMatchers(
-                    "/library-member/sign-up",
-                    "/application/json",
-                    "/library-member/check-id",
-                    "/library-member/check-email",
-                    "/email-authentication/send-email",
-                    "/book-list/whole-book",
-                    "/email-authentication/authentication-code",
-                    "/book-list/{categorizationSymbol}").anonymous();
+                    "/library-member/sign-up", // 회원가입
+                    "/application/json", // 로그인
+                    "/library-member/check-id", // 아이디 중복 체크
+                    "/library-member/check-email", // 이메일 중복 체크
+                    "/email-authentication/send-email", // 이메일 코드 전송
+                    "/email-authentication/authentication-code", // 이메일 코드 인증
+                    "/book-list/whole-book", // 전체 도서 목록
+                    "/book-list/category-book/{categorizationSymbol}", // 카테고리 별 도서 목록
+                    "/book-list/read-book/{bookNumber}" // 개별 도서 읽기
+            ).anonymous();
             authorizeRequests.requestMatchers(
-                    "/book-list/register-book",
-                    "/book-list/{bookNumber}",
-                    "/library-member/member-account-stop"
+                    "/book-list/register-book", // 도서 등록
+                    "/book-list/delete-book/{bookNumber}", // 도서 삭제
+                    "/book-list/modify-book/{bookNumber}", // 도서 수정
+                    "/library-member/member-account-stop" // 회원 상태 정지
                     ).hasAnyRole("MANAGER");
-            authorizeRequests.requestMatchers("/library-service/rental", "/library-service/hope-book").hasAnyRole("NORMAL", "MANAGER");
+            authorizeRequests.requestMatchers(
+                    "/library-service/rental", // 도서 대여
+                    "/library-service/hope-book" // 희망 도서 신청
+            ).hasAnyRole("NORMAL", "MANAGER");
             authorizeRequests.anyRequest().permitAll(); // 모두 접근 가능
         });
 

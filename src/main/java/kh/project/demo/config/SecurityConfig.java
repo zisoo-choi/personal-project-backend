@@ -73,7 +73,8 @@ public class SecurityConfig {
                     "/email-authentication/authentication-code", // 이메일 코드 인증
                     "/book-list/whole-book", // 전체 도서 목록
                     "/book-list/category-book/{categorizationSymbol}", // 카테고리 별 도서 목록
-                    "/book-list/read-book/{bookNumber}" // 개별 도서 읽기
+                    "/book-list/read-book/{bookNumber}", // 개별 도서 읽기
+                    "/library-service/hope-book-list" // 희망 도서 목록
             ).anonymous();
             authorizeRequests.requestMatchers(
                     "/book-list/register-book", // 도서 등록

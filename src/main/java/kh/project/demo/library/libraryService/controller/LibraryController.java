@@ -2,12 +2,15 @@ package kh.project.demo.library.libraryService.controller;
 
 import kh.project.demo.library.libraryService.controller.form.request.HopeBookForm;
 import kh.project.demo.library.libraryService.controller.form.request.RentalBookForm;
+import kh.project.demo.library.libraryService.entity.HopeBook;
 import kh.project.demo.library.libraryService.service.LibraryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -44,6 +47,14 @@ public class LibraryController {
             return libraryService.applicationBook(requestForm, userId);
         }
         return false;
+    }
+
+    // 희망 도서 목록
+    @GetMapping("/hope-book-list")
+    public List<HopeBook> hopeBookList() {
+        log.info("희망 도서 목록 요청!");
+        List<HopeBook> returnedHopeBookList = libraryService.list();
+        return returnedHopeBookList;
     }
 
 }

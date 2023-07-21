@@ -14,8 +14,10 @@ import kh.project.demo.library.member.entity.MemberServiceState;
 import kh.project.demo.library.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -92,6 +94,11 @@ public class LibraryServiceImpl implements LibraryService {
         hopeBookRepository.save(requestForm.toHopeBook(maybeMember.get().getMemberNumber()));
         log.info("존재하지 않는 도서이므로 희망 도서 신청 되었습니다.");
         return true;
+    }
+
+    @Override
+    public List<HopeBook> list() {
+        return hopeBookRepository.findAll(Sort.by(Sort.Direction.DESC, "hopeBookNumber"));
     }
 
 }

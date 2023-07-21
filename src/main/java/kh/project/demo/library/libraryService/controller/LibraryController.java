@@ -1,5 +1,6 @@
 package kh.project.demo.library.libraryService.controller;
 
+import kh.project.demo.library.book.entity.Book;
 import kh.project.demo.library.libraryService.controller.form.request.HopeBookForm;
 import kh.project.demo.library.libraryService.controller.form.request.RentalBookForm;
 import kh.project.demo.library.libraryService.entity.HopeBook;
@@ -55,6 +56,13 @@ public class LibraryController {
         log.info("희망 도서 목록 요청!");
         List<HopeBook> returnedHopeBookList = libraryService.list();
         return returnedHopeBookList;
+    }
+
+    // 희망 도서 상세 페이지 읽기
+    @GetMapping("/hope-book-read/{bookNumber}")
+    public HopeBook readHopeBook (@PathVariable("bookNumber") Long bookNumber) {
+        log.info("readHopeBook()");
+        return libraryService.read(bookNumber);
     }
 
 }

@@ -13,4 +13,6 @@ public interface LibraryService {
     boolean applicationBook(HopeBookForm requestForm, String userId);
 
     List<HopeBook> list();
+
+    HopeBook read(Long bookNumber);
 }

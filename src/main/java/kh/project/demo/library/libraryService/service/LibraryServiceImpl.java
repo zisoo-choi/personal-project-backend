@@ -101,4 +101,15 @@ public class LibraryServiceImpl implements LibraryService {
         return hopeBookRepository.findAll(Sort.by(Sort.Direction.DESC, "hopeBookNumber"));
     }
 
+    @Override
+    public HopeBook read(Long bookNumber) {
+        Optional<HopeBook> maybeHopeBook = hopeBookRepository.findByHopeBookNumber(bookNumber);
+
+        if(maybeHopeBook.isEmpty()){
+            log.info("존재하지 않는 도서 입니다.");
+            return null;
+        }
+        return maybeHopeBook.get();
+    }
+
 }

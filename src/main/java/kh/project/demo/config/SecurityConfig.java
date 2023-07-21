@@ -75,7 +75,8 @@ public class SecurityConfig {
                     "/book-list/category-book/{categorizationSymbol}", // 카테고리 별 도서 목록
                     "/book-list/read-book/{bookNumber}", // 개별 도서 읽기
                     "/library-service/hope-book-list", // 희망 도서 목록
-                    "/library-service/hope-book-read" // 개별 희망 도서 읽기
+                    "/library-service/hope-book-read", // 개별 희망 도서 읽기
+                    "/book-list/registration-date" // 신간 도서 목록
             ).anonymous();
             authorizeRequests.requestMatchers(
                     "/book-list/register-book", // 도서 등록

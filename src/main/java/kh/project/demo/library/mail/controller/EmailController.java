@@ -5,6 +5,7 @@ import kh.project.demo.library.mail.controller.form.request.EmailMessageToUserFo
 import kh.project.demo.library.mail.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -15,11 +16,12 @@ public class EmailController {
 
     final private EmailService emailService;
 
+    @Async
     @PostMapping("/send-email")
-    public boolean sendEmail(@RequestBody EmailMessageToUserForm emailMessageToUserForm){
+    public void sendEmail(@RequestBody EmailMessageToUserForm emailMessageToUserForm) {
         log.info("이메일 코드 보내기");
 
-        return emailService.sendMail(emailMessageToUserForm);
+        emailService.sendMail(emailMessageToUserForm);
     }
 
     @PostMapping("/authentication-code")

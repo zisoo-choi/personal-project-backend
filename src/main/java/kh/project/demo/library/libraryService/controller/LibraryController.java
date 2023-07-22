@@ -38,7 +38,7 @@ public class LibraryController {
 
     // 사용자 희망 도서 신청
     @PostMapping("/hope-book")
-    public boolean HopeBook(
+    public HopeBook HopeBook(
             @RequestBody HopeBookForm requestForm,
             @AuthenticationPrincipal UserDetails userDetails) {
         log.info("HopeBook()");
@@ -47,7 +47,7 @@ public class LibraryController {
             String userId = userDetails.getUsername();
             return libraryService.applicationBook(requestForm, userId);
         }
-        return false;
+        return null;
     }
 
     // 희망 도서 목록

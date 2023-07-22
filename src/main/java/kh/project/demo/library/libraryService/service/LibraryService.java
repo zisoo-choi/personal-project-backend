@@ -10,9 +10,11 @@ import java.util.List;
 public interface LibraryService {
     boolean rental(RentalBookForm requestForm, String userId);
 
-    boolean applicationBook(HopeBookForm requestForm, String userId);
+//    boolean applicationBook(HopeBookForm requestForm, String userId);
 
     List<HopeBook> list();
 
     HopeBook read(Long bookNumber);
+
+    HopeBook applicationBook(HopeBookForm requestForm, String userId);
 }

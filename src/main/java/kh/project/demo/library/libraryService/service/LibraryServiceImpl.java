@@ -62,7 +62,7 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
-    public boolean applicationBook(HopeBookForm requestForm, String userId){
+    public HopeBook applicationBook(HopeBookForm requestForm, String userId) {
         Optional<Book> maybeBook = bookRepository.findByBookName(requestForm.getBookName());
         Optional<Member> maybeMember = memberRepository.findByMemberId(userId);
 
@@ -72,28 +72,26 @@ public class LibraryServiceImpl implements LibraryService {
             Book book = maybeBook.get();
             if(book.getAuthor().equals(requestForm.getAuthor())){
                 log.info("존재하는 도서이므로 희망 도서 신청이 불가능 합니다.");
-                return false;
+                return null;
             }
 
             // 어떤 회원이 신청했는 지 확인
             if(maybeMember.isPresent()) {
                 Member member = maybeMember.get();
-                hopeBookRepository.save(requestForm.toHopeBook(member.getMemberNumber()));
                 log.info("존재하지 않는 도서이므로 희망 도서 신청 되었습니다.");
-                return true;
+                return hopeBookRepository.save(requestForm.toHopeBook(member.getMemberNumber()));
             }
         }
 
         // -> 아래 코드를 안 넣어주면 경고가 있는 듯 함
         if(maybeMember.isEmpty()) {
             log.info("존재하지 않는 회원입니다.");
-            return false;
+            return null;
         }
 
         // 2. 도서 이름이 다른 경우
-        hopeBookRepository.save(requestForm.toHopeBook(maybeMember.get().getMemberNumber()));
         log.info("존재하지 않는 도서이므로 희망 도서 신청 되었습니다.");
-        return true;
+        return hopeBookRepository.save(requestForm.toHopeBook(maybeMember.get().getMemberNumber()));
     }
 
     @Override

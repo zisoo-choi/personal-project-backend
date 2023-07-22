@@ -42,6 +42,7 @@ public class BookServiceImpl implements BookService{
                     return null;
                 }
                 Book book = requestForm.toRegisterBook();
+                book.setManagerNumber(member.getMemberNumber());
                 log.info("도서 등록이 완료 되었습니다.");
                 return bookRepository.save(book);
             }

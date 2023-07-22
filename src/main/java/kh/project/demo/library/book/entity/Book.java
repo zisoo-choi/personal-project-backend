@@ -20,6 +20,7 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookNumber; // 도서 번호
 
+    @Setter
     @JoinColumn(name = "memberNumber")
     private Long managerNumber; // 등록 관리자 번호
 
@@ -34,6 +35,7 @@ public class Book {
     private String publishCompany;
 
     @Setter
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @Enumerated(EnumType.STRING)

@@ -44,7 +44,8 @@ public class LibraryServiceImpl implements LibraryService {
         Member member = maybeMember.get();
 
         if (book.getBookAmount() > 0) {
-            Rental rental = requestForm.toRentalBook(member.getMemberNumber());
+//            Rental rental = requestForm.toRentalBook(member.getMemberNumber());
+            Rental rental = requestForm.toRentalBook(book, member);
             rental.setRentalState(RentalState.BookRental);
             member.setMemberServiceState(MemberServiceState.ServiceRental);
 
@@ -79,7 +80,7 @@ public class LibraryServiceImpl implements LibraryService {
             if(maybeMember.isPresent()) {
                 Member member = maybeMember.get();
                 log.info("존재하지 않는 도서이므로 희망 도서 신청 되었습니다.");
-                return hopeBookRepository.save(requestForm.toHopeBook(member.getMemberNumber()));
+                return hopeBookRepository.save(requestForm.toHopeBook(member));
             }
         }
 
@@ -91,7 +92,7 @@ public class LibraryServiceImpl implements LibraryService {
 
         // 2. 도서 이름이 다른 경우
         log.info("존재하지 않는 도서이므로 희망 도서 신청 되었습니다.");
-        return hopeBookRepository.save(requestForm.toHopeBook(maybeMember.get().getMemberNumber()));
+        return hopeBookRepository.save(requestForm.toHopeBook(maybeMember.get()));
     }
 
     @Override

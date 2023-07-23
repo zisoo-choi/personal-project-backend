@@ -2,6 +2,7 @@ package kh.project.demo.library.book.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import kh.project.demo.library.member.entity.Member;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -22,7 +23,9 @@ public class Book {
 
     @Setter
     @JoinColumn(name = "memberNumber")
-    private Long managerNumber; // 등록 관리자 번호
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    private Member manager; // 등록 관리자 번호
+    // 한 명의 관리자는 한 개의 도서를 관리할 수 있다.
 
 //    @Column(name="isbn" , unique=true)
 //    private String isbn; // 국제 표준 도서 번호

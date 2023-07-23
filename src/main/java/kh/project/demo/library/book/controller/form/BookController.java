@@ -56,6 +56,14 @@ public class BookController {
         return bookService.delete(bookNumber);
     }
 
+//    // 도서 삭제 (수량 받는)
+//    @DeleteMapping("/delete-book/{bookNumber}")
+//    public boolean deleteBook (@PathVariable("bookNumber") Long bookNumber,
+//                               @RequestParam("deleteCount") int deleteCount) {
+//        log.info("deleteBook()");
+//        return bookService.delete(bookNumber, deleteCount);
+//    }
+
     // 도서 상세 페이지 읽기
     @GetMapping("/read-book/{bookNumber}")
     public Book readBook (@PathVariable("bookNumber") Long bookNumber) {

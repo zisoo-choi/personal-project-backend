@@ -41,8 +41,8 @@ public class BookServiceImpl implements BookService{
                     log.info("권한이 없는 사용자는 도서 등록이 불가합니다.");
                     return null;
                 }
-                Book book = requestForm.toRegisterBook();
-                book.setManagerNumber(member.getMemberNumber());
+                Book book = requestForm.toRegisterBook(member);
+                book.setManager(member);
                 log.info("도서 등록이 완료 되었습니다.");
                 return bookRepository.save(book);
             }
@@ -78,12 +78,40 @@ public class BookServiceImpl implements BookService{
         return null;
     }
 
-    // 도서 삭제
+     //도서 삭제
     @Override
     public boolean delete(Long bookNumber){
         bookRepository.deleteById(bookNumber);
         return true;
     }
+
+    // 도서 삭제 (수량 받는)
+//    @Override
+//    public boolean delete(Long bookNumber, int deleteCount) {
+//        Optional<Book> maybeBook = bookRepository.findByBookNumber(bookNumber);
+//
+//        if (maybeBook.isPresent()) {
+//            Book book = maybeBook.get();
+//
+//            // 기존 도서의 수량과 삭제하려는 권수를 비교하여 삭제 가능한 권수를 계산합니다.
+//            int availableDeleteCount = Math.min(book.getBookAmount(), deleteCount);
+//
+//            if (availableDeleteCount > 0) {
+//                // 삭제 가능한 권수만큼 도서를 삭제합니다.
+//                book.setBookAmount(book.getBookAmount() - availableDeleteCount);
+//                bookRepository.save(book);
+//
+//                // 만약 도서 수량이 0이 되었을 경우에는 도서를 데이터베이스에서 완전히 삭제합니다.
+//                if (book.getBookAmount() == 0) {
+//                    bookRepository.delete(book);
+//                }
+//
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+
 
     // 도서 상세 페이지 읽기
     @Override

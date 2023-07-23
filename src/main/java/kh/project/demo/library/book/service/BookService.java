@@ -9,8 +9,6 @@ import java.util.List;
 
 public interface BookService {
 
-    boolean delete(Long bookNumber);
-
     List<Book> registerationDateSort();
 
     List<Book> listByfield(KoreanDecimalClassification categorizationSymbol);
@@ -22,4 +20,7 @@ public interface BookService {
     Book register(RegisterBookForm requestForm, String userId);
 
     Book modify(Long bookNumber, ModifyBookForm modifyBookForm, String userId);
+
+//    boolean delete(Long bookNumber, int deleteCount);
+    boolean delete(Long bookNumber);
 }

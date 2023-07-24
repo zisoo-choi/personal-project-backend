@@ -2,6 +2,8 @@ package kh.project.demo.library.libraryService.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import kh.project.demo.library.book.entity.Book;
+import kh.project.demo.library.member.entity.Member;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -21,10 +23,14 @@ public class Rental {
     private Long rentalNumber;
 
     @JoinColumn(name = "memberNumber")
-    private Long memberNumber;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Member member;
+    // 한 명의 회원은 여러 권의 책을 대여할 수 있다.
 
     @JoinColumn(name = "bookNumber")
-    private Long bookNumber;
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    private Book book;
+    // 한 권은 책은 대여가 하나이다. ?
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     @CreationTimestamp

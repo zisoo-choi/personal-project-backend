@@ -23,12 +23,12 @@ public class Rental {
     private Long rentalNumber;
 
     @JoinColumn(name = "memberNumber")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Member member;
     // 한 명의 회원은 여러 권의 책을 대여할 수 있다.
 
     @JoinColumn(name = "bookNumber")
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.EAGER, optional = false)
     private Book book;
     // 한 권은 책은 대여가 하나이다. ?
 

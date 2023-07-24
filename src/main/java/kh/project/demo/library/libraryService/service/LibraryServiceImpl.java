@@ -9,6 +9,7 @@ import kh.project.demo.library.libraryService.controller.form.request.RentalBook
 import kh.project.demo.library.libraryService.entity.Rental;
 import kh.project.demo.library.libraryService.repository.HopeBookRepository;
 import kh.project.demo.library.libraryService.repository.LibraryRepository;
+import kh.project.demo.library.libraryService.repository.RentalBookRepository;
 import kh.project.demo.library.member.entity.Member;
 import kh.project.demo.library.member.entity.MemberServiceState;
 import kh.project.demo.library.member.repository.MemberRepository;
@@ -29,6 +30,7 @@ public class LibraryServiceImpl implements LibraryService {
     final private MemberRepository memberRepository;
     final private BookRepository bookRepository;
     final private HopeBookRepository hopeBookRepository;
+    final private RentalBookRepository rentalBookRepository;
 
     @Override
     public boolean rental(RentalBookForm requestForm, String userId) {
@@ -96,7 +98,7 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
-    public List<HopeBook> list() {
+    public List<HopeBook> hopeList() {
         return hopeBookRepository.findAll(Sort.by(Sort.Direction.DESC, "hopeBookNumber"));
     }
 
@@ -111,4 +113,8 @@ public class LibraryServiceImpl implements LibraryService {
         return maybeHopeBook.get();
     }
 
+    @Override
+    public List<Rental> rentalList() {
+        return rentalBookRepository.findAll(Sort.by(Sort.Direction.DESC, "rentalNumber"));
+    }
 }

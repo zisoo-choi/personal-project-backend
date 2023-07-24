@@ -4,6 +4,7 @@ import kh.project.demo.library.book.entity.Book;
 import kh.project.demo.library.libraryService.controller.form.request.HopeBookForm;
 import kh.project.demo.library.libraryService.controller.form.request.RentalBookForm;
 import kh.project.demo.library.libraryService.entity.HopeBook;
+import kh.project.demo.library.libraryService.entity.Rental;
 import kh.project.demo.library.libraryService.service.LibraryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,9 +33,17 @@ public class LibraryController {
             // 로그인한 사용자의 정보를 활용한 로직 수행
             return libraryService.rental(requestForm, userId);
         }
-
         return false;
     }
+
+    @GetMapping("/rental-book-list")
+    public List<Rental> rentalBook() {
+        log.info("대여 목록 요청!");
+
+        List<Rental> returnedRentalBookList = libraryService.rentalList();
+        return returnedRentalBookList;
+    }
+
 
     // 사용자 희망 도서 신청
     @PostMapping("/hope-book")
@@ -54,7 +63,7 @@ public class LibraryController {
     @GetMapping("/hope-book-list")
     public List<HopeBook> hopeBookList() {
         log.info("희망 도서 목록 요청!");
-        List<HopeBook> returnedHopeBookList = libraryService.list();
+        List<HopeBook> returnedHopeBookList = libraryService.hopeList();
         return returnedHopeBookList;
     }
 

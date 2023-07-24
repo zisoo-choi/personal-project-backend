@@ -1,14 +1,18 @@
 package kh.project.demo.library.member.controller;
 
+import kh.project.demo.library.book.entity.Book;
 import kh.project.demo.library.member.controller.form.request.MemberBasicForm;
 import kh.project.demo.library.member.controller.form.request.MemberSignUpForm;
 import kh.project.demo.library.member.controller.form.request.MemberAccountStopForm;
+import kh.project.demo.library.member.entity.Member;
 import kh.project.demo.library.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -70,4 +74,14 @@ public class MemberController {
         }
         return null;
     }
+
+    // 회원 리스트 반환
+    @GetMapping("/member-list")
+    public List<Member> memberList() {
+        log.info("전체 회원 목록 요청 !");
+
+        List<Member> returnedMemberList = memberService.list();
+        return returnedMemberList;
+    }
+
 }

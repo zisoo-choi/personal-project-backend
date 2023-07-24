@@ -3,6 +3,9 @@ package kh.project.demo.library.member.service;
 import kh.project.demo.library.member.controller.form.request.MemberAccountStopForm;
 import kh.project.demo.library.member.controller.form.request.MemberBasicForm;
 import kh.project.demo.library.member.controller.form.request.MemberSignUpForm;
+import kh.project.demo.library.member.entity.Member;
+
+import java.util.List;
 
 public interface MemberService {
 
@@ -17,4 +20,6 @@ public interface MemberService {
     Boolean checkEmailDuplication(String email);
 
     Integer inquiryLimitsBook(String userId);
+
+    List<Member> list();
 }

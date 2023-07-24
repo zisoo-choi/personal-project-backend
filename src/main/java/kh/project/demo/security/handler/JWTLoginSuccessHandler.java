@@ -34,7 +34,7 @@ public class JWTLoginSuccessHandler implements AuthenticationSuccessHandler {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
         Gson gson = new Gson();
-        String jsonStr = gson.toJson(Map.of("accessToken", access, "refreshToken", refresh, "role", memberRole));
+        String jsonStr = gson.toJson(Map.of("accessToken", access, "refreshToken", refresh, "role", memberRole, "memberId", memberId));
         out.write(jsonStr);
         out.flush();
         out.close();

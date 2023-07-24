@@ -9,9 +9,11 @@ import kh.project.demo.library.member.entity.MemberState;
 import kh.project.demo.library.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -120,5 +122,10 @@ public class MemberServiceImpl implements MemberService{
         }
         Member member = maybeMember.get();
         return member.getAvailableAmount();
+    }
+
+    @Override
+    public List<Member> list(){
+        return memberRepository.findAll(Sort.by(Sort.Direction.DESC, "memberNumber"));
     }
 }

@@ -1,8 +1,10 @@
 package kh.project.demo.library.libraryService.controller;
 
 import kh.project.demo.library.book.entity.Book;
+import kh.project.demo.library.libraryService.controller.form.request.ExtensionBookForm;
 import kh.project.demo.library.libraryService.controller.form.request.HopeBookForm;
 import kh.project.demo.library.libraryService.controller.form.request.RentalBookForm;
+import kh.project.demo.library.libraryService.controller.form.request.ReturnedBookForm;
 import kh.project.demo.library.libraryService.entity.HopeBook;
 import kh.project.demo.library.libraryService.entity.Rental;
 import kh.project.demo.library.libraryService.service.LibraryService;
@@ -27,6 +29,7 @@ public class LibraryController {
     public boolean bookRental(
             @RequestBody RentalBookForm requestForm,
             @AuthenticationPrincipal UserDetails userDetails) {
+        log.info("도서 대여");
 
         if (userDetails != null) {
             String userId = userDetails.getUsername();
@@ -35,6 +38,35 @@ public class LibraryController {
         }
         return false;
     }
+
+    // 도서 연장
+    @PostMapping("/extension")
+    public boolean bookExtension(
+            @RequestBody ExtensionBookForm requestForm,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        log.info("도서 연장");
+
+        if(userDetails != null) {
+            String userId = userDetails.getUsername();
+            return libraryService.extension(requestForm, userId);
+        }
+        return false;
+    }
+
+    // 도서 반납
+//    @PostMapping("/return")
+//    public boolean bookReturn(
+//            @RequestBody ReturnedBookForm requestForm,
+//            @AuthenticationPrincipal UserDetails userDetails) {
+//        log.info("도서 반납");
+//
+//        if (userDetails != null){
+//            String userId = userDetails.getUsername();
+//            return libraryService.returned(requestForm, userId);
+//        }
+//
+//        return false;
+//    }
 
     @GetMapping("/rental-book-list")
     public List<Rental> rentalBook() {

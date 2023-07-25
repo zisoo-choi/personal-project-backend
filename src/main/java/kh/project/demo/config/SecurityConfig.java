@@ -86,7 +86,8 @@ public class SecurityConfig {
                     ).hasAnyRole("MANAGER");
             authorizeRequests.requestMatchers(
                     "/library-service/rental", // 도서 대여
-                    "/library-service/hope-book" // 희망 도서 신청
+                    "/library-service/hope-book", // 희망 도서 신청
+                    "/library-service/extension" // 도서 대여기간 연장
             ).hasAnyRole("NORMAL", "MANAGER");
             authorizeRequests.anyRequest().permitAll(); // 모두 접근 가능
         });

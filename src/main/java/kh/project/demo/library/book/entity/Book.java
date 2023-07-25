@@ -45,6 +45,9 @@ public class Book {
     private KoreanDecimalClassification categorizationSymbol; // 분류 기호 -> 한국 십진 분류표
 
     @Setter
+    private Integer rentalAmount; // 대여 가능 권 수
+
+    @Setter
     private Integer bookAmount; // 전체 도서 권 수
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
@@ -70,6 +73,10 @@ public class Book {
 //    }
 
     public void minusAmount () {
-        this.bookAmount -= 1;
+        this.rentalAmount -= 1;
+    }
+
+    public void plusAmount () {
+        this.rentalAmount += 1;
     }
 }

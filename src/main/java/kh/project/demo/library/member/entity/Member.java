@@ -46,4 +46,8 @@ public class Member {
     public void minusAmount () {
         this.availableAmount -= 1;
     }
+
+    public void plusAmount () {
+        this.availableAmount += 1;
+    }
 }

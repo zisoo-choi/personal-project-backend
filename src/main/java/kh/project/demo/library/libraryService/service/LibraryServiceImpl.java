@@ -38,31 +38,85 @@ public class LibraryServiceImpl implements LibraryService {
         Optional<Member> maybeMember = memberRepository.findByMemberId(userId);
 
         if (maybeBook.isEmpty()) {
-            log.info("존재하지 않는 도서 입니다.");
+            log.info("존재하지 않는 도서입니다.");
+            return false;
+        }
+
+        if (maybeMember.isEmpty()) {
+            log.info("존재하지 않는 회원입니다.");
             return false;
         }
 
         Book book = maybeBook.get();
         Member member = maybeMember.get();
 
-        if (book.getBookAmount() > 0) {
-//            Rental rental = requestForm.toRentalBook(member.getMemberNumber());
-            Rental rental = requestForm.toRentalBook(book, member);
-            rental.setRentalState(RentalState.BookRental);
+        // 먼저 연체 기록이 존재하지 않는 지 확인해야 한다.
+        if(member.getMemberServiceState().equals(MemberServiceState.ServiceOverdue)) {
+            log.info("연체 기일이 존재하는 회원은 연체 기일동안 대여 불가입니다.");
+            return false;
+        }
+
+        if (book.getBookAmount() > 0 && member.getAvailableAmount() > 0) {
+            Rental rental = Rental.builder()
+                    .member(member)
+                    .book(book)
+                    .rentalState(RentalState.BookRental)
+                    .build();
+
+            rental.setEstimatedRentalDate(rental.getRentalDate().plusDays(15));
+
             member.setMemberServiceState(MemberServiceState.ServiceRental);
 
             book.minusAmount(); // 도서 대여 수량 1 감소
             member.minusAmount(); // 회원의 대여 수량 1 감소
+
             memberRepository.save(member);
             bookRepository.save(book);
-            libraryRepository.save(rental);
+            rentalBookRepository.save(rental);
 
-            log.info("대출 되었습니다.");
+            log.info("대출되었습니다.");
             return true;
         }
-        log.info("대여 수량이 0 입니다.");
+
+        log.info("대여 수량이 0입니다.");
         return false;
     }
+
+
+//    @Override
+//    public boolean returned(ReturnedBookForm requestForm, String userId) {
+//        Optional<Book> maybeBook = bookRepository.findByBookNumber(requestForm.getBookNumber());
+//        Optional<Member> maybeMember = memberRepository.findByMemberId(userId);
+//
+//        if(maybeBook.isPresent() && maybeMember.isPresent()){
+//            Member member = maybeMember.get();
+//            Book book = maybeBook.get();
+//
+//            // 대여 기록 조회
+//            Rental rental = rentalBookRepository.findByMemberAndBook(member, book);
+//
+//            if(rental.getRentalState().equals(RentalState.BookRental)){
+//
+//                // 사용자가 연체 인지 아닌 지 여부 확인
+//
+//
+//                // 연체 아니고 대여 상태라면
+//                rental.setRentalState(RentalState.BookBefore); // 대출 전 상태로 만들어주기(=사실상 반납)
+//                book.plusAmount(); // 도서 대여 수량 1 증가
+//
+//                // 사용자가 연체가 아니라면 사용자의 대여 수량 1 증가
+//
+//            }
+//        }
+//
+//        // 반납을 해보자고
+//        // 1. memberNumber 와 bookNumber 모두 일치하면 반납 완료
+//        // 1 - 1) 일치해서 반납 (정상)
+//        // 1 - 2) 일치하나 연체된 반납 (비정상)
+//
+//
+//        return false;
+//    }
 
     @Override
     public HopeBook applicationBook(HopeBookForm requestForm, String userId) {

@@ -6,7 +6,6 @@ import kh.project.demo.library.book.entity.Book;
 import kh.project.demo.library.member.entity.Member;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -28,7 +27,7 @@ public class Rental {
     // 한 명의 회원은 여러 권의 책을 대여할 수 있다.
 
     @JoinColumn(name = "bookNumber")
-    @OneToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Book book;
     // 한 권은 책은 대여가 하나이다. ?
 
@@ -36,25 +35,24 @@ public class Rental {
     @CreationTimestamp
     private final LocalDateTime rentalDate = LocalDateTime.now(); // 대여 일자
 
+    @Setter
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
-    @UpdateTimestamp
     private LocalDateTime estimatedRentalDate; // 예상(정상) 반납 일자
 
+    @Setter
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
-    @UpdateTimestamp
     private LocalDateTime extensionDate; // 연장 일자
 
+    @Setter
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
-    @UpdateTimestamp
     private LocalDateTime returnDate; // 실제 반납 일자
 
+    @Setter
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
-    @UpdateTimestamp
     private LocalDateTime overdueDate; // 연체 일자
 
     // 회원 대여 상태
     @Setter
     @Enumerated(EnumType.STRING)
     private RentalState rentalState;
-
 }

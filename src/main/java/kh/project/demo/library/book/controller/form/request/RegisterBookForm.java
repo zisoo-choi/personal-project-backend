@@ -29,6 +29,7 @@ public class RegisterBookForm {
                 .content(content)
                 .categorizationSymbol(categorizationSymbol)
                 .bookAmount(bookAmount)
+                .rentalAmount(bookAmount)
                 .build();
     }
 }

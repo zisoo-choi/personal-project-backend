@@ -68,12 +68,26 @@ public class LibraryController {
 //        return false;
 //    }
 
+    // 대여 된 도서 리스트
     @GetMapping("/rental-book-list")
     public List<Rental> rentalBook() {
         log.info("대여 목록 요청!");
 
         List<Rental> returnedRentalBookList = libraryService.rentalList();
         return returnedRentalBookList;
+    }
+
+    // 개인 사용자의 도서 리스트
+    @GetMapping("personal-rent-list")
+    public List<Rental> personalRentList(@AuthenticationPrincipal UserDetails userDetails) {
+        log.info("개인 대여 도서 조회");
+
+        if(userDetails != null) {
+            String userId = userDetails.getUsername();
+            return libraryService.personalRentalList(userId);
+        }
+
+        return null;
     }
 
 

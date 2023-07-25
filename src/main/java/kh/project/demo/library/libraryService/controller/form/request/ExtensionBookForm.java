@@ -1,5 +1,8 @@
 package kh.project.demo.library.libraryService.controller.form.request;
 
+import kh.project.demo.library.book.entity.Book;
+import kh.project.demo.library.libraryService.entity.Rental;
+import kh.project.demo.library.member.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,4 +13,11 @@ import lombok.NoArgsConstructor;
 public class ExtensionBookForm {
 
     private Long bookNumber;
+
+    public Rental toReturnedBook(Book book, Member member){
+        return Rental.builder()
+                .book(book)
+                .member(member)
+                .build();
+    }
 }

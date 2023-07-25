@@ -25,5 +25,7 @@ public interface LibraryService {
 
     boolean extension(ExtensionBookForm requestForm, String userId);
 
+    List<Rental> personalRentalList(String userId);
+
 //    boolean returned(ReturnedBookForm requestForm, String userId);
 }

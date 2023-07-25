@@ -55,9 +55,16 @@ public class LibraryServiceImpl implements LibraryService {
         Book book = maybeBook.get();
         Member member = maybeMember.get();
 
-        // 먼저 연체 기록이 존재하지 않는 지 확인해야 한다.
-        if(member.getMemberServiceState().equals(MemberServiceState.ServiceOverdue)) {
-            log.info("연체 기일이 존재하는 회원은 연체 기일동안 대여 불가입니다.");
+        // 먼저 연체 기록이 존재하지 않는 지 확인해야 합니다.
+        if (member.getMemberServiceState().equals(MemberServiceState.ServiceOverdue)) {
+            log.info("연체 기일이 존재하는 회원은 연체 기간 동안 대여 불가입니다.");
+            return false;
+        }
+
+        // 이미 대여된 도서인지 확인합니다.
+        List<Rental> existingRentals = rentalBookRepository.findByMemberAndBookAndRentalState(member, book, RentalState.BookRental);
+        if (!existingRentals.isEmpty()) {
+            log.info("이미 대여된 도서입니다.");
             return false;
         }
 
@@ -106,26 +113,25 @@ public class LibraryServiceImpl implements LibraryService {
         Member member = maybeMember.get();
 
         // 예약자가 존재하지 않는지 확인
-        // ( reservation 테이블에 존재하는 bookNumber 가 있는 지 확인하면 될 듯!? )
         Optional<Reservation> maybeReservation = reservationRepository.findByBook(book);
 
-        if(maybeReservation.isPresent()) {
+        if (maybeReservation.isPresent()) {
             log.info("예약자가 존재하므로 도서 연장이 불가합니다.");
             return false;
         }
 
-        // 반납 기한이 지나지 않았는지 확인
+        // 대출 기록이 존재하는 지 확인
         Optional<Rental> maybeRental = rentalBookRepository.findByMemberAndBook(member, book);
 
-        if(maybeRental.isEmpty()) {
+        if (maybeRental.isEmpty()) {
             log.info("존재하지 않는 회원과 도서입니다.");
             return false;
         }
 
-        Rental rental = maybeRental.get();
+        Rental rental = maybeRental.get(); // 여기서 첫 번째 대출 기록을 가져옴
         LocalDateTime now = LocalDateTime.now();
 
-        if (rental.getEstimatedRentalDate().isBefore(now)) {
+        if (rental.getEstimatedRentalDate() != null && rental.getEstimatedRentalDate().isBefore(now)) {
             // 반납 예정일이 현재 날짜보다 이전이면, 반납 예정일이 지난 것입니다.
             rental.setOverdueDate(now); // 연체일자를 현재 날짜로 설정
             rental.setRentalState(RentalState.BookDelinquency);
@@ -140,13 +146,17 @@ public class LibraryServiceImpl implements LibraryService {
         }
 
         // 예약자가 존재하지 않고, 연체 일자가 존재하지 않는다면 연장이 가능합니다.
-//        rental.setExtensionDate(now); // 오늘 연장을 신청했다 !
-        rental.setExtensionDate(rental.getEstimatedRentalDate().plusDays(7)); // 마감 반납 날짜 + 7일 연장한다 !
-        rentalBookRepository.save(rental);
+        if (rental.getEstimatedRentalDate() != null) {
+            rental.setExtensionDate(rental.getEstimatedRentalDate().plusDays(7)); // 마감 반납 날짜 + 7일 연장한다 !
+            rentalBookRepository.save(rental);
 
-        member.setMemberServiceState(MemberServiceState.ServiceExtension); // 회원 연장했다 ! (-> 이거 좀 이상하다.)
-        memberRepository.save(member);
-        return true;
+            member.setMemberServiceState(MemberServiceState.ServiceExtension); // 회원 연장했다 ! (-> 이거 좀 이상하다.)
+            memberRepository.save(member);
+            return true;
+        } else {
+            log.info("반납 예정일이 없습니다."); // 혹시라도 예상 반납일이 null이면 에러 메시지 출력
+            return false;
+        }
     }
 
 
@@ -237,5 +247,22 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     public List<Rental> rentalList() {
         return rentalBookRepository.findAll(Sort.by(Sort.Direction.DESC, "rentalNumber"));
+    }
+
+    @Override
+    public List<Rental> personalRentalList(String userId) {
+        Optional<Member> maybeMember = memberRepository.findByMemberId(userId);
+
+        if(maybeMember.isEmpty()){
+            log.info("존재하지 않는 사용자 입니다.");
+            return null;
+        }
+
+        Member member = maybeMember.get();
+
+        // 해당 사용자의 Rental 기록들을 반환해줘야 함
+        List<Rental> rentalList = rentalBookRepository.findByMember(member);
+
+        return rentalList;
     }
 }

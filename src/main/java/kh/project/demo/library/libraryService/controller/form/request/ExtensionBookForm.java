@@ -11,13 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExtensionBookForm {
-
     private Long bookNumber;
 
-    public Rental toReturnedBook(Book book, Member member){
-        return Rental.builder()
-                .book(book)
-                .member(member)
-                .build();
-    }
 }

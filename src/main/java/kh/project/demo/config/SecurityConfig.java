@@ -82,7 +82,8 @@ public class SecurityConfig {
                     "/book-list/register-book", // 도서 등록
                     "/book-list/delete-book/{bookNumber}", // 도서 삭제
                     "/book-list/modify-book/{bookNumber}", // 도서 수정
-                    "/library-member/member-account-stop" // 회원 상태 정지
+                    "/library-member/member-account-stop", // 회원 상태 정지
+                    "/library-service/reservation-list" //예약 도서 목록
                     ).hasAnyRole("MANAGER");
             authorizeRequests.requestMatchers(
                     "/library-service/rental", // 도서 대여

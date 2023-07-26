@@ -3,12 +3,10 @@ package kh.project.demo.library.libraryService.service;
 import kh.project.demo.library.book.entity.Book;
 import kh.project.demo.library.libraryService.controller.form.request.ExtensionBookForm;
 import kh.project.demo.library.libraryService.controller.form.request.HopeBookForm;
-import kh.project.demo.library.libraryService.entity.HopeBook;
-import kh.project.demo.library.libraryService.entity.RentalState;
+import kh.project.demo.library.libraryService.controller.form.request.ReservationBookForm;
+import kh.project.demo.library.libraryService.entity.*;
 import kh.project.demo.library.book.repository.BookRepository;
 import kh.project.demo.library.libraryService.controller.form.request.RentalBookForm;
-import kh.project.demo.library.libraryService.entity.Rental;
-import kh.project.demo.library.libraryService.entity.Reservation;
 import kh.project.demo.library.libraryService.repository.HopeBookRepository;
 import kh.project.demo.library.libraryService.repository.LibraryRepository;
 import kh.project.demo.library.libraryService.repository.RentalBookRepository;
@@ -120,7 +118,7 @@ public class LibraryServiceImpl implements LibraryService {
             return false;
         }
 
-        // 대출 기록이 존재하는 지 확인
+        // 회원이 이미 대여한 도서인 지 확인한다. (대여해야만 연장 가능)
         Optional<Rental> maybeRental = rentalBookRepository.findByMemberAndBook(member, book);
 
         if (maybeRental.isEmpty()) {
@@ -128,7 +126,7 @@ public class LibraryServiceImpl implements LibraryService {
             return false;
         }
 
-        Rental rental = maybeRental.get(); // 여기서 첫 번째 대출 기록을 가져옴
+        Rental rental = maybeRental.get();
         LocalDateTime now = LocalDateTime.now();
 
         if (rental.getEstimatedRentalDate() != null && rental.getEstimatedRentalDate().isBefore(now)) {
@@ -159,6 +157,55 @@ public class LibraryServiceImpl implements LibraryService {
         }
     }
 
+    @Override
+    public boolean reservation(ReservationBookForm requestForm, String userId) {
+        Optional<Book> maybeBook = bookRepository.findByBookNumber(requestForm.getBookNumber());
+        Optional<Member> maybeMember = memberRepository.findByMemberId(userId);
+
+        if (maybeBook.isEmpty()) {
+            log.info("도서가 존재하지 않습니다.");
+            return false;
+        }
+
+        if (maybeMember.isEmpty()) {
+            log.info("회원이 존재하지 않습니다.");
+            return false;
+        }
+
+        Book book = maybeBook.get();
+        Member member = maybeMember.get();
+
+        // 해당 도서와 회원이 기존에 대여를 한 도서라면 예약이 불가능 합니다.
+        Optional<Rental> maybeRental = rentalBookRepository.findByMemberAndBook(member, book);
+
+        if(maybeRental.isPresent()) {
+            log.info("해당 도서를 대여한 회원은 예약할 수 없습니다.");
+            return false;
+        }
+
+        // 해당 도서와 회원이 기존에 예약을 했다면 중복 예약이 불가능 합니다.
+        Optional<Reservation> maybeReservation = reservationRepository.findByBookAndMember(book, member);
+
+        if(maybeReservation.isPresent()){
+            log.info("중복 예약은 불가능 합니다.");
+            return false;
+        }
+
+        // 중복된 예약이 아니라면 예약 생성
+        Reservation reservation = Reservation.builder()
+                .member(member)
+                .book(book)
+                .reservationState(ReservationState.Await) // 대기 (예약 후, 대출 전)
+                .build();
+
+        reservationRepository.save(reservation);
+        return true;
+    }
+
+    @Override
+    public List<Reservation> reservationList(){
+        return reservationRepository.findAll(Sort.by(Sort.Direction.DESC, "reservationNumber"));
+    }
 
 //    @Override
 //    public boolean returned(ReturnedBookForm requestForm, String userId) {
@@ -264,5 +311,19 @@ public class LibraryServiceImpl implements LibraryService {
         List<Rental> rentalList = rentalBookRepository.findByMember(member);
 
         return rentalList;
+    }
+
+    @Override
+    public List<Reservation> personalReservationList(String userId) {
+        Optional<Member> maybeMember = memberRepository.findByMemberId(userId);
+
+        if(maybeMember.isEmpty()){
+            log.info("존재하지 않는 사용자 입니다.");
+            return null;
+        }
+        Member member = maybeMember.get();
+
+        List<Reservation> reservationList = reservationRepository.findByMember(member);
+        return reservationList;
     }
 }

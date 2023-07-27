@@ -10,9 +10,11 @@ import java.util.Optional;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
-    Optional<Reservation> findByBook(Book book);
+//    Optional<Reservation> findByBook(Book book);
 
     Optional<Reservation> findByBookAndMember(Book book, Member member);
 
     List<Reservation> findByMember(Member member);
+
+    List<Reservation> findByBook(Book book);
 }

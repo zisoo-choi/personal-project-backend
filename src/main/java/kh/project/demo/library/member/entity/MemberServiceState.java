@@ -6,6 +6,6 @@ public enum MemberServiceState {
     ServiceRental, // 대출
     ServiceExtension, // 연장
     ServiceOverdue, // 연체
-    ServiceReservation, // 예약
-    ServiceReturn // 반납
+    ServiceReservation // 예약
+//    ServiceReturn // 반납
 }

@@ -87,19 +87,19 @@ public class LibraryController {
     }
 
     // 도서 반납
-//    @PostMapping("/return")
-//    public boolean bookReturn(
-//            @RequestBody ReturnedBookForm requestForm,
-//            @AuthenticationPrincipal UserDetails userDetails) {
-//        log.info("도서 반납");
-//
-//        if (userDetails != null){
-//            String userId = userDetails.getUsername();
-//            return libraryService.returned(requestForm, userId);
-//        }
-//
-//        return false;
-//    }
+    @PostMapping("/return")
+    public boolean bookReturn(
+            @RequestBody ReturnedBookForm requestForm,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        log.info("도서 반납");
+
+        if (userDetails != null){
+            String userId = userDetails.getUsername();
+            return libraryService.returned(requestForm, userId);
+        }
+
+        return false;
+    }
 
     // 대여 도서 리스트
     @GetMapping("/rental-book-list")

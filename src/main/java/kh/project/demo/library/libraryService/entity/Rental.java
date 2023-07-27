@@ -39,17 +39,22 @@ public class Rental {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime estimatedRentalDate; // 예상(정상) 반납 일자
 
+//    @Setter
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+//    private LocalDateTime extensionDate; // 연장 일자
+
     @Setter
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
-    private LocalDateTime extensionDate; // 연장 일자
+    private LocalDateTime extensionEstimatedDate; // 연장 후 반납 예정일
+
+    @Setter
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+    private LocalDateTime overdueDate; // 일단 잠깐 두는 연체 일자
 
     @Setter
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime returnDate; // 실제 반납 일자
 
-    @Setter
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
-    private LocalDateTime overdueDate; // 연체 일자
 
     // 회원 대여 상태
     @Setter

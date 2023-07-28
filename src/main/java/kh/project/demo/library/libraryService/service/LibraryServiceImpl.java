@@ -103,81 +103,88 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     public boolean extension(ExtensionBookForm requestForm, String userId) {
-        Optional<Book> maybeBook = bookRepository.findByBookNumber(requestForm.getBookNumber());
+        // 시도 중
+
+        // 1. 해당 도서와 회원이 빌린 대여가 맞는 지 확인
+        Optional<Rental> maybeRental = rentalBookRepository.findByRentalNumber(requestForm.getRentalNumber());
         Optional<Member> maybeMember = memberRepository.findByMemberId(userId);
 
-        if (maybeBook.isEmpty()) {
-            log.info("도서가 존재하지 않습니다.");
+        if(maybeMember.isEmpty()) {
+            log.info("존재하지 않는 회원 입니다.");
             return false;
         }
 
-        if (maybeMember.isEmpty()) {
-            log.info("회원이 존재하지 않습니다.");
-            return false;
-        }
-
-        Book book = maybeBook.get();
-        Member member = maybeMember.get();
-
-        List<Reservation> reservations = reservationRepository.findByBook(book);
-
-        // 예약자가 존재한다면
-        if (!reservations.isEmpty()) {
-            // 예약일자를 기준으로 오름차순으로 정렬하여 가장 먼저 예약한 회원 가져오기
-            Reservation firstReservation = reservations.stream().min(Comparator.comparing(Reservation::getReservationDate))
-                    .orElse(null);
-
-            if (!firstReservation.getMember().equals(member)) {
-                log.info("예약자가 존재하므로 도서 연장이 불가합니다.");
-                return false;
-            }
-        }
-
-        Optional<Rental> maybeRental = rentalBookRepository.findByMemberAndBook(member, book);
-
-        if (maybeRental.isEmpty()) {
-            log.info("존재하지 않는 회원과 도서입니다.");
+        if(maybeRental.isEmpty()) {
+            log.info("존재하지 않는 대여 기록 입니다.");
             return false;
         }
 
         Rental rental = maybeRental.get();
-        LocalDateTime now = LocalDateTime.now();
-        RentalState rentalState = rental.getRentalState();
+        Member member = maybeMember.get();
 
-        if (rentalState != RentalState.BookRental) {
-            log.info("해당 도서는 연장 불가능한 상태입니다.");
+        // 2. 해당 도서가 "예약"되어 있는 도서이면 연장 불가능
+        // (예약 인원이 한 명이 아닌 여러 명일 수도 있으니 List 로 받는다.)
+        List<Reservation> maybeReservation = reservationRepository.findByBook(rental.getBook());
+
+        if(!maybeReservation.isEmpty()) {
+            log.info("예약 인원이 존재하므로 연장 불가 입니다.");
             return false;
         }
 
-        if (rental.getEstimatedRentalDate().isBefore(now)) {
-            long overdueDays = LocalDateTime.now().toLocalDate().toEpochDay() -
-                    rental.getEstimatedRentalDate().toLocalDate().toEpochDay();
+//         // 3. 대여기록이 확인 된 회원은 대여 상태가 "연체" 상태이면 연장 불가능
+//        if(rental.getRentalState().equals(RentalState.BookDelinquency)) {
+//            log.info("연체 상태이므로 연장이 불가 합니다. 빠른 시일 내로 반납 해주세요");
+//            return false;
+//        }
+//
+//        // 3-1. (수정 버전) 회원의 서비스 상태가 "연체" 상태이면 연장 불가능
+//        if(member.getMemberServiceState().equals(MemberServiceState.ServiceOverdue)) {
+//            log.info("회원의 상태가 연체이므로 연장이 불가합니다. 빠른 시일 내로 반납 해주세요 !");
+//            return false;
+//        }
 
-            rental.setOverdueDate(rental.getEstimatedRentalDate().plusDays(overdueDays));
-            rental.setRentalState(RentalState.BookDelinquency);
-            member.setMemberServiceState(MemberServiceState.ServiceOverdue);
+        // 3-2. (최종 수정 버전) 회원의 대여 기록들을 List 로 불러와서 연체 기록이 하나라도 존재하면 연체로 간주한다 !
+        List<Rental> rentalList = rentalBookRepository.findAllByRentalNumber(requestForm.getRentalNumber());  // ★
+        for (Rental rentalStateCheck : rentalList) {
+            if (rentalStateCheck.getRentalState() == RentalState.BookDelinquency) {
+                // 하나라도 연체가 되었다면
+                if (!member.getMemberServiceState().equals(MemberServiceState.ServiceOverdue)) {
+                    // 연체된 회원이 연체로 되어 있지 않다면 연체 상태로 업데이트 해줍니다.
+                    member.setMemberServiceState(MemberServiceState.ServiceOverdue);
+                    memberRepository.save(member);
+                }
+                log.info("연체된 도서가 존재하므로 연장이 불가합니다.");
+                return false;
+            }
+        }
 
-            memberRepository.save(member);
-            bookRepository.save(book);
-            rentalBookRepository.save(rental);
-
-            log.info("연체된 회원입니다.");
+        // 4. 대여기록이 확인 된 회원은 대여 상태가 "연장" 상태이면 연장 불가능
+        if(rental.getRentalState().equals(RentalState.ServiceExtension)) {
+            // 연장 상태인데 반납 기한을 넘긴 상태라면 연체로 만들어 준다.
+            if(rental.getExtensionEstimatedDate().isBefore(LocalDateTime.now())) {
+                // 연장 후 반납 예정일이 "현재"보다 넘긴 후라면 연체 상태로 업데이트 해준다.
+                rental.setRentalState(RentalState.BookDelinquency);
+                member.setMemberServiceState(MemberServiceState.ServiceOverdue);
+                memberRepository.save(member);
+                rentalBookRepository.save(rental);
+                log.info("연장 후 반납 예정일이 지났습니다. 빠른 시일 내로 반납 해주세요");
+            }
+            else {
+                log.info("이미 연장한 회원은 재 연장이 불가 합니다.");
+            }
             return false;
         }
 
-        if (rental.getExtensionEstimatedDate() == null) {
-            LocalDateTime newExtensionDate = rental.getEstimatedRentalDate().plusDays(7);
-            rental.setExtensionEstimatedDate(newExtensionDate);
-            rental.setRentalState(RentalState.ServiceExtension);
-            rentalBookRepository.save(rental);
+        // 5. 대여기록이 확인 되었고, 대여 상태가 "연장"과 "연체"가 아닌 회원은 연장이 가능합니다.
+        rental.setRentalState(RentalState.ServiceExtension); // 연장
+        rental.setExtensionEstimatedDate(rental.getEstimatedRentalDate().plusDays(15));
+        rentalBookRepository.save(rental);
 
-            member.setMemberServiceState(MemberServiceState.ServiceExtension);
-            memberRepository.save(member);
-            return true;
-        } else {
-            log.info("반납 예정일이 없습니다.");
-            return false;
-        }
+        member.setMemberServiceState(MemberServiceState.ServiceExtension);
+        memberRepository.save(member);
+
+        log.info("도서 연장되었습니다!");
+        return true;
     }
 
     @Override
@@ -232,72 +239,89 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     public boolean returned(ReturnedBookForm requestForm, String userId) {
-        Optional<Book> maybeBook = bookRepository.findByBookNumber(requestForm.getBookNumber());
-        Optional<Member> maybeMember = memberRepository.findByMemberId(userId);
 
-        if (maybeBook.isEmpty()) {
-            log.info("도서가 존재하지 않습니다.");
-            return false;
-        }
+        Optional<Rental> maybeRental = rentalBookRepository.findByRentalNumber(requestForm.getRentalNumber());
 
-        if (maybeMember.isEmpty()) {
-            log.info("회원이 존재하지 않습니다.");
-            return false;
-        }
-
-        Book book = maybeBook.get();
-        Member member = maybeMember.get();
-
-        // 회원은 해당 도서를 대여 중이거나 연장 상태이어야 합니다.
-        Optional<Rental> maybeRental = rentalBookRepository.findByMemberAndBookAndRentalStateIn(member, book,
-                Arrays.asList(RentalState.BookRental, RentalState.ServiceExtension));
-
-        if (maybeRental.isEmpty()) {
-            log.info("해당 도서를 대여 중이거나 연장 중인 회원이 아닙니다.");
+        if(maybeRental.isEmpty()){
+            log.info("존재하지 않는 대여입니다.");
             return false;
         }
 
         Rental rental = maybeRental.get();
-        // 연장하지 않았거나 연체되지 않았다면
-        if (rental.getExtensionEstimatedDate() != null || rental.getOverdueDate() != null) {
-            // 현재 기간에서 대여의 연체가 되었는지 계산합니다. (현재 날짜 - 정상 반납 일자 = 연체일)
-            long overdueDays = LocalDateTime.now().toLocalDate().toEpochDay() -
-                    rental.getEstimatedRentalDate().toLocalDate().toEpochDay();
-
-            // 연체 기간을 연체 일자 필드에 저장합니다.
-            rental.setOverdueDate(rental.getEstimatedRentalDate().plusDays(overdueDays));
-
-            // 연체 상태를 처리하는 로직 추가 (기준일 이후 반납이면 연체 처리)
-            if (LocalDateTime.now().isAfter(rental.getEstimatedRentalDate().plusDays(overdueDays))) {
-                // 연체 상태로 변경
-                rental.setRentalState(RentalState.BookDelinquency);
-                // 연체 기간 설정 (실제 반납일 - 정상 반납일자 = 연체일)
-                LocalDateTime overdueDateTime = rental.getEstimatedRentalDate().plusDays(overdueDays);
-                rental.setOverdueDate(overdueDateTime);
-            } else {
-                // 연체 기간은 있으나 아직 반납일이 아닌 경우, 실제 반납 일자로 설정
-                rental.setReturnDate(LocalDateTime.now());
-                // 반납한 책의 상태를 서비스 반납으로 변경
-                rental.setRentalState(RentalState.ServiceReturn);
-            }
-        }
-        // 연장했거나 연체된 경우
-        else {
-            // 연체 기록이 없는 경우, 연장 후 반납 예정일 컬럼인 extensionEstimatedDate 에 실제 반납 일자를 기록합니다.
-            rental.setReturnDate(LocalDateTime.now());
-
-            // 반납한 책의 상태를 서비스 반납으로 변경합니다.
-            rental.setRentalState(RentalState.ServiceReturn);
+        // 1. 대여 상태가 연체 라면 연체일자를 업데이트 해주고, 반납 해줍니다.
+        if(rental.getRentalState().equals(RentalState.BookDelinquency)){
+            return false;
         }
 
-        book.plusAmount(); // 도서 반납 수량 1 증가
-        member.plusAmount(); // 회원의 대여 가능 수량 1 증가
+        // 2. 대여 상태가 연체가 아니라면 반납 해줍니다.
 
-        memberRepository.save(member);
-        bookRepository.save(book);
-        rentalBookRepository.save(rental);
 
-        log.info("도서의 반납 완료");
+//        Optional<Book> maybeBook = bookRepository.findByBookNumber(requestForm.getBookNumber());
+//        Optional<Member> maybeMember = memberRepository.findByMemberId(userId);
+//
+//        if (maybeBook.isEmpty()) {
+//            log.info("도서가 존재하지 않습니다.");
+//            return false;
+//        }
+//
+//        if (maybeMember.isEmpty()) {
+//            log.info("회원이 존재하지 않습니다.");
+//            return false;
+//        }
+//
+//        Book book = maybeBook.get();
+//        Member member = maybeMember.get();
+//
+//        // 회원은 해당 도서를 대여 중이거나 연장 상태이어야 합니다.
+//        Optional<Rental> maybeRental = rentalBookRepository.findByMemberAndBookAndRentalStateIn(member, book,
+//                Arrays.asList(RentalState.BookRental, RentalState.ServiceExtension));
+//
+//        if (maybeRental.isEmpty()) {
+//            log.info("해당 도서를 대여 중이거나 연장 중인 회원이 아닙니다.");
+//            return false;
+//        }
+//
+//        Rental rental = maybeRental.get();
+//        // 연장하지 않았거나 연체되지 않았다면
+//        if (rental.getExtensionEstimatedDate() != null || rental.getOverdueDate() != null) {
+//            // 현재 기간에서 대여의 연체가 되었는지 계산합니다. (현재 날짜 - 정상 반납 일자 = 연체일)
+//            long overdueDays = LocalDateTime.now().toLocalDate().toEpochDay() -
+//                    rental.getEstimatedRentalDate().toLocalDate().toEpochDay();
+//
+//            // 연체 기간을 연체 일자 필드에 저장합니다.
+//            rental.setOverdueDate(rental.getEstimatedRentalDate().plusDays(overdueDays));
+//
+//            // 연체 상태를 처리하는 로직 추가 (기준일 이후 반납이면 연체 처리)
+//            if (LocalDateTime.now().isAfter(rental.getEstimatedRentalDate().plusDays(overdueDays))) {
+//                // 연체 상태로 변경
+//                rental.setRentalState(RentalState.BookDelinquency);
+//                // 연체 기간 설정 (실제 반납일 - 정상 반납일자 = 연체일)
+//                LocalDateTime overdueDateTime = rental.getEstimatedRentalDate().plusDays(overdueDays);
+//                rental.setOverdueDate(overdueDateTime);
+//            } else {
+//                // 연체 기간은 있으나 아직 반납일이 아닌 경우, 실제 반납 일자로 설정
+//                rental.setReturnDate(LocalDateTime.now());
+//                // 반납한 책의 상태를 서비스 반납으로 변경
+//                rental.setRentalState(RentalState.ServiceReturn);
+//            }
+//        }
+//        // 연장했거나 연체된 경우
+//        else {
+//            // 연체 기록이 없는 경우, 연장 후 반납 예정일 컬럼인 extensionEstimatedDate 에 실제 반납 일자를 기록합니다.
+//            rental.setReturnDate(LocalDateTime.now());
+//
+//            // 반납한 책의 상태를 서비스 반납으로 변경합니다.
+//            rental.setRentalState(RentalState.ServiceReturn);
+//        }
+//
+//        book.plusAmount(); // 도서 반납 수량 1 증가
+//        member.plusAmount(); // 회원의 대여 가능 수량 1 증가
+//
+//        memberRepository.save(member);
+//        bookRepository.save(book);
+//        rentalBookRepository.save(rental);
+//
+//        log.info("도서의 반납 완료");
         return true;
     }
         // 반납을 하려면 ?

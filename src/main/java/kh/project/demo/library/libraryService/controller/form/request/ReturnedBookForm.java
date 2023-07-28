@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReturnedBookForm {
 
-    private Long bookNumber;
+//    private Long bookNumber;
+
+    private Long rentalNumber;
 
     public Rental toReturnedBook(Book book, Member member){
         return Rental.builder()

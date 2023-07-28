@@ -15,4 +15,8 @@ public interface RentalBookRepository extends JpaRepository<Rental, Long> {
     Optional<Rental> findByMemberAndBook(Member member, Book book);
 
     Optional<Rental> findByMemberAndBookAndRentalStateIn(Member member, Book book, List<RentalState> asList);
+
+    Optional<Rental> findByRentalNumber(Long rentalNumber);
+
+    List<Rental> findAllByRentalNumber(Long rentalNumber);
 }

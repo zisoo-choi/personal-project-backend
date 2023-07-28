@@ -25,11 +25,11 @@ public class Reservation {
     private Long reservationNumber;
 
     @JoinColumn(name = "memberNumber")
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne
     private Member member; // 예약 회원
 
     @JoinColumn(name = "bookNumber")
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne
     private Book book; // 예약 도서
 
     // 도서 예약 상태

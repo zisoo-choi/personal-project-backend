@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExtensionBookForm {
-    private Long bookNumber;
+//    private Long bookNumber;
+    private Long rentalNumber;
 
 }

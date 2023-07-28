@@ -21,7 +21,7 @@ public class HopeBook {
     private Long hopeBookNumber;
 
     @JoinColumn(name = "memberNumber")
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne
     private Member member; // 희망도서 신청 회원
     // 한 명의 회원이 여러 개의 희망 도서를 가질 수 있다.
 

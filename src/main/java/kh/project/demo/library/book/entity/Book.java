@@ -1,13 +1,17 @@
 package kh.project.demo.library.book.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import kh.project.demo.library.libraryService.entity.Rental;
+import kh.project.demo.library.libraryService.entity.Reservation;
 import kh.project.demo.library.member.entity.Member;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Entity
@@ -23,7 +27,7 @@ public class Book {
 
     @Setter
     @JoinColumn(name = "memberNumber")
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne
     private Member manager; // 등록 관리자 번호
     // 한 명의 관리자는 한 개의 도서를 관리할 수 있다.
 
@@ -58,6 +62,16 @@ public class Book {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     @UpdateTimestamp
     private LocalDateTime updateDate; // 업데이트 일자
+
+    // 예약 엔티티와의 참조 관계 설정
+    @OneToMany(mappedBy = "book", fetch = FetchType.EAGER)
+    @JsonIgnore
+    private List<Reservation> reservations;
+
+    // 대여 엔티티와의 참조 관계 설정
+    @OneToMany(mappedBy = "book", fetch = FetchType.EAGER)
+    @JsonIgnore
+    private List<Rental> rentals;
 
 //    public Book(Long managerNumber, String bookName, String author,
 //                String publishCompany, String content,

@@ -1,7 +1,13 @@
 package kh.project.demo.library.member.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import kh.project.demo.library.libraryService.entity.HopeBook;
+import kh.project.demo.library.libraryService.entity.Rental;
+import kh.project.demo.library.libraryService.entity.Reservation;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Entity
@@ -39,6 +45,21 @@ public class Member {
     @Setter
     @Enumerated(EnumType.STRING)
     private MemberServiceState memberServiceState;
+
+    // 예약 엔티티와의 참조 관계 설정
+    @JsonIgnore
+    @OneToMany(mappedBy = "member", fetch = FetchType.EAGER)
+    private List<Reservation> reservations;
+
+    // 희망 도서 엔티티와의 참조 관계 설정
+    @JsonIgnore
+    @OneToMany(mappedBy = "member", fetch = FetchType.EAGER)
+    private List<HopeBook> hopeBooks;
+
+    // 대여 엔티티와의 참조 관계 설정
+    @JsonIgnore
+    @OneToMany(mappedBy = "member", fetch = FetchType.EAGER)
+    private List<Rental> rentals;
 
     @Setter
     private Integer availableAmount; // 회원이 동시에 대여할 수 있는 한도 수

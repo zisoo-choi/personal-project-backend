@@ -1,5 +1,6 @@
 package kh.project.demo.library.libraryService.service;
 
+import jakarta.transaction.Transactional;
 import kh.project.demo.library.book.entity.Book;
 import kh.project.demo.library.libraryService.controller.form.request.*;
 import kh.project.demo.library.libraryService.entity.*;
@@ -242,6 +243,7 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
+    @Transactional
     public boolean returned(ReturnedBookForm requestForm, String userId) {
 
         Optional<Rental> maybeRental = rentalBookRepository.findByRentalNumber(requestForm.getRentalNumber());
@@ -307,23 +309,27 @@ public class LibraryServiceImpl implements LibraryService {
 
                     log.info("연장 후 연체 회원의 반납이 완료되었습니다.");
                     return true;
+                } else {
+                    // 1-2. 연장 후 연체가 아닌 상황이라면 반납 해줍니다.
+                    member.setMemberServiceState(MemberServiceState.ServiceNormal);
+                    rental.setRentalState(RentalState.ServiceReturn);
+                    rental.setReturnDate(LocalDateTime.now());
+
+                    book.plusAmount(); // 도서 대여 수량 1 증가
+                    member.plusAmount(); // 회원의 대여 가능 수량 1 증가
+
+                    rentalBookRepository.save(rental);
+                    memberRepository.save(member);
+                    bookRepository.save(book);
+
+                    log.info("연장 후 반납이 완료되었습니다.");
+                    return true;
                 }
-                // 1-2. 연장 후 연체가 아닌 상황이라면 반납 해줍니다.
-                member.setMemberServiceState(MemberServiceState.ServiceNormal);
-                rental.setRentalState(RentalState.ServiceReturn);
-                rental.setReturnDate(LocalDateTime.now());
-
-                book.plusAmount(); // 도서 대여 수량 1 증가
-                member.plusAmount(); // 회원의 대여 가능 수량 1 증가
-
-                rentalBookRepository.save(rental);
-                memberRepository.save(member);
-                bookRepository.save(book);
-
-                log.info("연장 후 반납이 완료되었습니다.");
-                return true;
             }
+            ///--> 연장 임
 
+
+            ///--> 연장 아님
             // 2. 대여 상태가 연체가 아니라면 현재 연체 상황인지 확인합니다.
 
             // 2-1. 연체 상황이라면 연체 일자를 계산해서 연체 일자를 업데이트 해주고 반납합니다.
@@ -356,21 +362,26 @@ public class LibraryServiceImpl implements LibraryService {
 
                 log.info("연장 후 연체 회원의 반납이 완료되었습니다.");
                 return true;
+            } else {
+                // 2-2. 연체 상황이 아니라면 반납합니다.
+                member.setMemberServiceState(MemberServiceState.ServiceNormal);
+                rental.setRentalState(RentalState.ServiceReturn);
+                rental.setReturnDate(LocalDateTime.now());
+
+                book.plusAmount(); // 도서 대여 수량 1 증가
+                member.plusAmount(); // 회원의 대여 가능 수량 1 증가
+                log.info(String.valueOf(rental.getRentalState()));
+                rentalBookRepository.save(rental);
+                memberRepository.save(member);
+                bookRepository.save(book);
+                log.info(String.valueOf(rental.getRentalState()));
+                log.info(String.valueOf(rental.getRentalNumber()));
+                Rental rental5 = rentalBookRepository.findByRentalNumber(18L).get();
+                log.info(String.valueOf(rental5.getRentalNumber()));
+                log.info(String.valueOf(rental5.getRentalState()));
+                log.info("반납이 완료되었습니다.");
+                return true;
             }
-            // 2-2. 연체 상황이 아니라면 반납합니다.
-            member.setMemberServiceState(MemberServiceState.ServiceNormal);
-            rental.setRentalState(RentalState.ServiceReturn);
-            rental.setReturnDate(LocalDateTime.now());
-
-            book.plusAmount(); // 도서 대여 수량 1 증가
-            member.plusAmount(); // 회원의 대여 가능 수량 1 증가
-
-            rentalBookRepository.save(rental);
-            memberRepository.save(member);
-            bookRepository.save(book);
-
-            log.info("연장 후 반납이 완료되었습니다.");
-            return true;
         }
 
         log.info("해당 도서를 대여하지 않은 회원입니다.");

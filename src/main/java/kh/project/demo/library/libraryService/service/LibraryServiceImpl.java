@@ -121,69 +121,74 @@ public class LibraryServiceImpl implements LibraryService {
         Rental rental = maybeRental.get();
         Member member = maybeMember.get();
 
-        // 2. 해당 도서가 "예약"되어 있는 도서이면 연장 불가능
-        // (예약 인원이 한 명이 아닌 여러 명일 수도 있으니 List 로 받는다.)
-        List<Reservation> maybeReservation = reservationRepository.findByBook(rental.getBook());
+        // ★ 회원이 "대여 중" or "연장 중" 인 경우만 반납이 가능하다.
+        if(rental.getRentalState().equals(RentalState.BookRental) || rental.getRentalState().equals(RentalState.BookDelinquency)) {
 
-        if(!maybeReservation.isEmpty()) {
-            log.info("예약 인원이 존재하므로 연장 불가 입니다.");
-            return false;
-        }
+            // 2. 해당 도서가 "예약"되어 있는 도서이면 연장 불가능
+            // (예약 인원이 한 명이 아닌 여러 명일 수도 있으니 List 로 받는다.)
+            List<Reservation> maybeReservation = reservationRepository.findByBook(rental.getBook());
 
-//         // 3. 대여기록이 확인 된 회원은 대여 상태가 "연체" 상태이면 연장 불가능
-//        if(rental.getRentalState().equals(RentalState.BookDelinquency)) {
-//            log.info("연체 상태이므로 연장이 불가 합니다. 빠른 시일 내로 반납 해주세요");
-//            return false;
-//        }
-//
-//        // 3-1. (수정 버전) 회원의 서비스 상태가 "연체" 상태이면 연장 불가능
-//        if(member.getMemberServiceState().equals(MemberServiceState.ServiceOverdue)) {
-//            log.info("회원의 상태가 연체이므로 연장이 불가합니다. 빠른 시일 내로 반납 해주세요 !");
-//            return false;
-//        }
-
-        // 3-2. (최종 수정 버전) 회원의 대여 기록들을 List 로 불러와서 연체 기록이 하나라도 존재하면 연체로 간주한다 !
-        List<Rental> rentalList = rentalBookRepository.findAllByRentalNumber(requestForm.getRentalNumber());  // ★
-        for (Rental rentalStateCheck : rentalList) {
-            if (rentalStateCheck.getRentalState() == RentalState.BookDelinquency) {
-                // 하나라도 연체가 되었다면
-                if (!member.getMemberServiceState().equals(MemberServiceState.ServiceOverdue)) {
-                    // 연체된 회원이 연체로 되어 있지 않다면 연체 상태로 업데이트 해줍니다.
-                    member.setMemberServiceState(MemberServiceState.ServiceOverdue);
-                    memberRepository.save(member);
-                }
-                log.info("연체된 도서가 존재하므로 연장이 불가합니다.");
+            if (!maybeReservation.isEmpty()) {
+                log.info("예약 인원이 존재하므로 연장 불가 입니다.");
                 return false;
             }
-        }
 
-        // 4. 대여기록이 확인 된 회원은 대여 상태가 "연장" 상태이면 연장 불가능
-        if(rental.getRentalState().equals(RentalState.ServiceExtension)) {
-            // 연장 상태인데 반납 기한을 넘긴 상태라면 연체로 만들어 준다.
-            if(rental.getExtensionEstimatedDate().isBefore(LocalDateTime.now())) {
-                // 연장 후 반납 예정일이 "현재"보다 넘긴 후라면 연체 상태로 업데이트 해준다.
-                rental.setRentalState(RentalState.BookDelinquency);
-                member.setMemberServiceState(MemberServiceState.ServiceOverdue);
-                memberRepository.save(member);
-                rentalBookRepository.save(rental);
-                log.info("연장 후 반납 예정일이 지났습니다. 빠른 시일 내로 반납 해주세요");
+            //         // 3. 대여기록이 확인 된 회원은 대여 상태가 "연체" 상태이면 연장 불가능
+            //        if(rental.getRentalState().equals(RentalState.BookDelinquency)) {
+            //            log.info("연체 상태이므로 연장이 불가 합니다. 빠른 시일 내로 반납 해주세요");
+            //            return false;
+            //        }
+            //
+            //        // 3-1. (수정 버전) 회원의 서비스 상태가 "연체" 상태이면 연장 불가능
+            //        if(member.getMemberServiceState().equals(MemberServiceState.ServiceOverdue)) {
+            //            log.info("회원의 상태가 연체이므로 연장이 불가합니다. 빠른 시일 내로 반납 해주세요 !");
+            //            return false;
+            //        }
+
+            // 3-2. (최종 수정 버전) 회원의 대여 기록들을 List 로 불러와서 연체 기록이 하나라도 존재하면 연체로 간주한다 !
+            List<Rental> rentalList = rentalBookRepository.findAllByRentalNumber(requestForm.getRentalNumber());  // ★
+            for (Rental rentalStateCheck : rentalList) {
+                if (rentalStateCheck.getRentalState() == RentalState.BookDelinquency) {
+                    // 하나라도 연체가 되었다면
+                    if (!member.getMemberServiceState().equals(MemberServiceState.ServiceOverdue)) {
+                        // 연체된 회원이 연체로 되어 있지 않다면 연체 상태로 업데이트 해줍니다.
+                        member.setMemberServiceState(MemberServiceState.ServiceOverdue);
+                        memberRepository.save(member);
+                    }
+                    log.info("연체된 도서가 존재하므로 연장이 불가합니다.");
+                    return false;
+                }
             }
-            else {
-                log.info("이미 연장한 회원은 재 연장이 불가 합니다.");
+
+            // 4. 대여기록이 확인 된 회원은 대여 상태가 "연장" 상태이면 연장 불가능
+            if (rental.getRentalState().equals(RentalState.ServiceExtension)) {
+                // 연장 상태인데 반납 기한을 넘긴 상태라면 연체로 만들어 준다.
+                if (rental.getExtensionEstimatedDate().isBefore(LocalDateTime.now())) {
+                    // 연장 후 반납 예정일이 "현재"보다 넘긴 후라면 연체 상태로 업데이트 해준다.
+                    rental.setRentalState(RentalState.BookDelinquency);
+                    member.setMemberServiceState(MemberServiceState.ServiceOverdue);
+                    memberRepository.save(member);
+                    rentalBookRepository.save(rental);
+                    log.info("연장 후 반납 예정일이 지났습니다. 빠른 시일 내로 반납 해주세요");
+                } else {
+                    log.info("이미 연장한 회원은 재 연장이 불가 합니다.");
+                }
+                return false;
             }
-            return false;
+
+            // 5. 대여기록이 확인 되었고, 대여 상태가 "연장"과 "연체"가 아닌 회원은 연장이 가능합니다.
+            rental.setRentalState(RentalState.ServiceExtension); // 연장
+            rental.setExtensionEstimatedDate(rental.getEstimatedRentalDate().plusDays(15));
+            rentalBookRepository.save(rental);
+
+            member.setMemberServiceState(MemberServiceState.ServiceExtension);
+            memberRepository.save(member);
+
+            log.info("도서 연장되었습니다!");
+            return true;
         }
-
-        // 5. 대여기록이 확인 되었고, 대여 상태가 "연장"과 "연체"가 아닌 회원은 연장이 가능합니다.
-        rental.setRentalState(RentalState.ServiceExtension); // 연장
-        rental.setExtensionEstimatedDate(rental.getEstimatedRentalDate().plusDays(15));
-        rentalBookRepository.save(rental);
-
-        member.setMemberServiceState(MemberServiceState.ServiceExtension);
-        memberRepository.save(member);
-
-        log.info("도서 연장되었습니다!");
-        return true;
+        log.info("도서를 대여하지 않은 회원입니다.");
+        return false;
     }
 
     @Override

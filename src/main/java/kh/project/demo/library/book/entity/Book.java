@@ -69,7 +69,7 @@ public class Book {
     private List<Reservation> reservations;
 
     // 대여 엔티티와의 참조 관계 설정
-    @OneToMany(mappedBy = "book", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "book", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Rental> rentals;
 

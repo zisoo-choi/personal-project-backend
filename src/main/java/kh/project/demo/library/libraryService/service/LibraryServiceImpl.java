@@ -17,7 +17,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -278,24 +280,18 @@ public class LibraryServiceImpl implements LibraryService {
 
                 // 1-1. 연장 후 대여 상태가 연체 라면 연체일자를 업데이트 해주고, 반납 해줍니다.
                 // (해당 대여에 대한 연체 일자만 업데이트 해주고 그 기간 동안 대여 정지를 주면 됨)
-                if (rental.getRentalState().equals(RentalState.BookDelinquency) ||
-                        rental.getExtensionEstimatedDate().isBefore(LocalDateTime.now())) {
+                if (rental.getExtensionEstimatedDate().isBefore(LocalDateTime.now())) {
                     // 연체 상태거나 연장 후 반납 예정일이 현재보다 지났다면
                     rental.setRentalState(RentalState.BookDelinquency);
                     member.setMemberServiceState(MemberServiceState.ServiceOverdue);
 
                     // 연장 후 반납 예정일 - 현재 날자 = 대여 금지 일자
                     // 23.07.25 - 23.07.28 = 3일 ((=> 23.07.31))
-                    LocalDateTime now = LocalDateTime.now(); // 현재 일자
-                    LocalDateTime extensionEstimatedDate = rental.getExtensionEstimatedDate(); // 반납 예정 일자
 
-                    LocalDateTime unavailableDate = extensionEstimatedDate.minusDays(
-                            now.getDayOfMonth() - extensionEstimatedDate.getDayOfMonth()
-                    );
-                    //                 반납 예정 일자            (현재.달과 월 - 반납 예정 일자.달과월)
-                    log.info("대여 불가능 일자: " + unavailableDate);
+                    int delinquencyDays =  Period.between(rental.getExtensionEstimatedDate().toLocalDate(), LocalDate.now()).getDays();
+                    LocalDateTime overdueDateTime = LocalDateTime.now().plusDays(delinquencyDays);
 
-                    rental.setOverdueDate(unavailableDate); // 연체 일자 업데이트
+                    rental.setOverdueDate(overdueDateTime); // 연체 일자 업데이트
                     rental.setRentalState(RentalState.ServiceReturn);
                     rental.setReturnDate(LocalDateTime.now());
 
@@ -340,15 +336,11 @@ public class LibraryServiceImpl implements LibraryService {
 
                 // 연장 후 반납 예정일 - 현재 날자 = 대여 금지 일자
                 // 23.07.25 - 23.07.28 = 3일 ((=> 23.07.31))
-                LocalDateTime now = LocalDateTime.now(); // 현재 일자
-                LocalDateTime extensionEstimatedDate = rental.getEstimatedRentalDate(); // 반납 예정 일자
 
-                LocalDateTime unavailableDate = extensionEstimatedDate.minusDays(
-                        now.getDayOfMonth() - extensionEstimatedDate.getDayOfMonth()
-                );
-                log.info("대여 불가능 일자: " + unavailableDate);
+                int delinquencyDays =  Period.between(rental.getEstimatedRentalDate().toLocalDate(), LocalDate.now()).getDays();
+                LocalDateTime overdueDateTime = LocalDateTime.now().plusDays(delinquencyDays);
 
-                rental.setOverdueDate(unavailableDate); // 연체 일자 업데이트
+                rental.setOverdueDate(overdueDateTime); // 연체 일자 업데이트
                 rental.setRentalState(RentalState.ServiceReturn);
                 rental.setReturnDate(LocalDateTime.now());
 
@@ -376,9 +368,6 @@ public class LibraryServiceImpl implements LibraryService {
                 bookRepository.save(book);
                 log.info(String.valueOf(rental.getRentalState()));
                 log.info(String.valueOf(rental.getRentalNumber()));
-                Rental rental5 = rentalBookRepository.findByRentalNumber(18L).get();
-                log.info(String.valueOf(rental5.getRentalNumber()));
-                log.info(String.valueOf(rental5.getRentalState()));
                 log.info("반납이 완료되었습니다.");
                 return true;
             }
@@ -471,5 +460,10 @@ public class LibraryServiceImpl implements LibraryService {
 
         List<Reservation> reservationList = reservationRepository.findByMember(member);
         return reservationList;
+    }
+
+    @Override
+    public List<HopeBook> personalHopeList(String userId){
+        return hopeBookRepository.findByMemberMemberId(userId);
     }
 }

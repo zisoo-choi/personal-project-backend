@@ -30,4 +30,6 @@ public interface LibraryService {
     List<Reservation> personalReservationList(String userId);
 
     boolean returned(ReturnedBookForm requestForm, String userId);
+
+    List<HopeBook> personalHopeList(String userId);
 }

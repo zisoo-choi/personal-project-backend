@@ -152,4 +152,17 @@ public class LibraryController {
         return libraryService.read(bookNumber);
     }
 
+    // 개인 사용자의 희망 도서 목록
+    @GetMapping("personal-hope-list")
+    public List<HopeBook> personalHopeList(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        log.info("personal hope list !");
+
+        if(userDetails != null) {
+            String userId = userDetails.getUsername();
+            return libraryService.personalHopeList(userId);
+        }
+        return null;
+    }
+
 }

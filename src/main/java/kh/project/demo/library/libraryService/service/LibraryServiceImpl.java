@@ -213,7 +213,7 @@ public class LibraryServiceImpl implements LibraryService {
         Member member = maybeMember.get();
 
         // 해당 도서와 회원이 기존에 대여를 한 도서라면 예약이 불가능 합니다.
-        Optional<Rental> maybeRental = rentalBookRepository.findByMemberAndBook(member, book);
+        Optional<Rental> maybeRental = rentalBookRepository.findByMemberAndBookAndRentalState(member, book, RentalState.BookRental);
 
         if(maybeRental.isPresent()) {
             log.info("해당 도서를 대여한 회원은 예약할 수 없습니다.");

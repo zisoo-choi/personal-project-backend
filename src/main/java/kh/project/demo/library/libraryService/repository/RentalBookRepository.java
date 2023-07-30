@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface RentalBookRepository extends JpaRepository<Rental, Long> {
     List<Rental> findByMember(Member member);
 
-    Optional<Rental> findByMemberAndBook(Member member, Book book);
+    Optional<Rental> findByMemberAndBookAndRentalState(Member member, Book book, RentalState rentalState);
 
     Optional<Rental> findByMemberAndBookAndRentalStateIn(Member member, Book book, List<RentalState> asList);
 

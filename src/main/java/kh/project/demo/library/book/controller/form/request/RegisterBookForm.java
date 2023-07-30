@@ -18,6 +18,7 @@ public class RegisterBookForm {
     private String content;
     private KoreanDecimalClassification categorizationSymbol;
     private Integer bookAmount;
+    private String filePathList;
 
 
     public Book toRegisterBook(Member member) {
@@ -30,6 +31,7 @@ public class RegisterBookForm {
                 .categorizationSymbol(categorizationSymbol)
                 .bookAmount(bookAmount)
                 .rentalAmount(bookAmount)
+                .filePathList(filePathList)
                 .build();
     }
 }

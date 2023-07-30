@@ -31,9 +31,8 @@ public class Book {
     private Member manager; // 등록 관리자 번호
     // 한 명의 관리자는 한 개의 도서를 관리할 수 있다.
 
-//    @Column(name="isbn" , unique=true)
-//    private String isbn; // 국제 표준 도서 번호
-    // --> 이거 대신에 그냥 도서 번호를 사용해도 좋을 것 같다는 생각 중
+    @Column(name="filePathList" , unique=true)
+    private String filePathList; // S3에 업로드된 도서 이미지
 
     private String bookName;
 

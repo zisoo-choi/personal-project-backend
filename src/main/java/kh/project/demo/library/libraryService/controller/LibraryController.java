@@ -165,4 +165,75 @@ public class LibraryController {
         return null;
     }
 
+    // 회원 개인 대출 기록 건수
+    @GetMapping("/personal-rental-amount")
+    public Integer memberRentalAmount(
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        if (userDetails != null) {
+            String userId = userDetails.getUsername();
+            return libraryService.personalRentalAmount(userId);
+        }
+        return null;
+    }
+
+    // 회원 개인 예약 기록 건수
+    @GetMapping("/personal-reservation-amount")
+    public Integer memberReservationAmount(
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        if (userDetails != null) {
+            String userId = userDetails.getUsername();
+            return libraryService.personalReservationAmount(userId);
+        }
+        return null;
+    }
+
+    // 회원 희망 도서 기록 건수
+    @GetMapping("/personal-hope-amount")
+    public Integer memberHopeAmount(
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        if (userDetails != null) {
+            String userId = userDetails.getUsername();
+            return libraryService.personalHopeAmount(userId);
+        }
+        return null;
+    }
+
+    // 전체 회원의 대출 기록 건수
+    @GetMapping("/management-rental-amount")
+    public Integer managementRentalAmount(
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        if (userDetails != null) {
+            String userId = userDetails.getUsername();
+            return libraryService.managementRentalAmount(userId);
+        }
+        return null;
+    }
+
+    // 전체 회원의 예약 기록 건수
+    @GetMapping("/management-reservation-amount")
+    public Integer managementReservationAmount(
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        if (userDetails != null) {
+            String userId = userDetails.getUsername();
+            return libraryService.managementReservationAmount(userId);
+        }
+        return null;
+    }
+
+    // 전체 회원의 희망 도서 기록 건수
+    @GetMapping("/management-hope-amount")
+    public Integer managementHopeAmount(
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        if (userDetails != null) {
+            String userId = userDetails.getUsername();
+            return libraryService.managementHopeAmount(userId);
+        }
+        return null;
+    }
 }

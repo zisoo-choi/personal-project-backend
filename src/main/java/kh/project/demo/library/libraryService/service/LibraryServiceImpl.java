@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -465,5 +466,84 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     public List<HopeBook> personalHopeList(String userId){
         return hopeBookRepository.findByMemberMemberId(userId);
+    }
+
+    @Override
+    public Integer personalRentalAmount(String userId) {
+        Optional<Member> maybeMember = memberRepository.findByMemberId(userId);
+
+        if(maybeMember.isEmpty()){
+            log.info("존재하지 않는 사용자 입니다.");
+            return null;
+        }
+
+        Member member = maybeMember.get();
+
+        List<Rental> rentalBooks = rentalBookRepository.findByMember(member);
+
+        // 대여 상태인 도서들만 찾기
+        List<Rental> filteredRentalBooks = rentalBooks.stream()
+                .filter(rental -> rental.getRentalState()
+                                .equals(RentalState.BookRental) ||
+                                rental.getRentalState().equals(RentalState.ServiceExtension))
+                .collect(Collectors.toList());
+
+        return filteredRentalBooks.size();
+    }
+
+    @Override
+    public Integer personalReservationAmount(String userId) {
+        Optional<Member> maybeMember = memberRepository.findByMemberId(userId);
+
+        if(maybeMember.isEmpty()){
+            log.info("존재하지 않는 사용자 입니다.");
+            return null;
+        }
+
+        Member member = maybeMember.get();
+
+        List<Reservation> reservationsBooks = reservationRepository.findByMember(member);
+        return reservationsBooks.size();
+    }
+
+    @Override
+    public Integer personalHopeAmount(String userId) {
+        Optional<Member> maybeMember = memberRepository.findByMemberId(userId);
+
+        if(maybeMember.isEmpty()){
+            log.info("존재하지 않는 사용자 입니다.");
+            return null;
+        }
+
+        Member member = maybeMember.get();
+
+        List<HopeBook> hopeBooks = hopeBookRepository.findByMember(member);
+        return hopeBooks.size();
+    }
+
+    @Override
+    public Integer managementRentalAmount(String userId) {
+        List<Rental> rentalBooks = rentalBookRepository.findAll();
+
+        // 대여 상태인 도서들만 찾기
+        List<Rental> filteredRentalBooks = rentalBooks.stream()
+                .filter(rental -> rental.getRentalState()
+                        .equals(RentalState.BookRental) ||
+                        rental.getRentalState().equals(RentalState.ServiceExtension))
+                .collect(Collectors.toList());
+
+        return filteredRentalBooks.size();
+    }
+
+    @Override
+    public Integer managementReservationAmount(String userId) {
+        List<Reservation> reservationList = reservationRepository.findAll();
+        return reservationList.size();
+    }
+
+    @Override
+    public Integer managementHopeAmount(String userId) {
+        List<HopeBook> hopeBookList = hopeBookRepository.findAll();
+        return hopeBookList.size();
     }
 }

@@ -111,7 +111,7 @@ jobs:
             fi
             echo "pass mysql-container"
             
-            if [[ "$(docker ps -qa --filterancestor=personal-project-backend/personal-project-backend-server:latest)" ]]; then
+            if [[ "$(docker ps -qa --filter ancestor=personal-project-backend/personal-project-backend-server:latest)" ]]; then
               docker rm -f $(docker pas -qa --filter ancestor=personal-project-backend/personal-project-backend-server:latest)
             fi
             echo "pass personal-project-backend/personal-project-backend-server:latest"

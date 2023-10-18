@@ -65,20 +65,6 @@ public class SecurityConfig {
         // URI 별 접근 권한 설정 @PreAuthorize 로 도 설정 가능
         http.authorizeHttpRequests((authorizeRequests) -> {
             authorizeRequests.requestMatchers(
-                    "/library-member/sign-up", // 회원가입
-                    "/library-member/sign-in", // 로그인
-                    "/library-member/check-id", // 아이디 중복 체크
-                    "/library-member/check-email", // 이메일 중복 체크
-                    "/email-authentication/send-email", // 이메일 코드 전송
-                    "/email-authentication/authentication-code", // 이메일 코드 인증
-                    "/book-list/whole-book", // 전체 도서 목록
-                    "/book-list/category-book/{categorizationSymbol}", // 카테고리 별 도서 목록
-                    "/book-list/read-book/{bookNumber}", // 개별 도서 읽기
-                    "/library-service/hope-book-list", // 희망 도서 목록
-                    "/library-service/hope-book-read", // 개별 희망 도서 읽기
-                    "/book-list/registration-date" // 신간 도서 목록
-            ).anonymous();
-            authorizeRequests.requestMatchers(
                     "/book-list/register-book", // 도서 등록
                     "/book-list/delete-book/{bookNumber}", // 도서 삭제
                     "/book-list/modify-book/{bookNumber}", // 도서 수정

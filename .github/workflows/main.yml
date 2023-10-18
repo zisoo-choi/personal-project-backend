@@ -106,7 +106,7 @@ jobs:
             ls -al
             cd cloud-library-project/backend/actions-runner
             pwd
-            if [[ "$(docker ps -q --filter ancestor=mysql:8.0)" ]]; then
+            if [[ "$(docker ps -qa --filter ancestor=mysql:8.0)" ]]; then
               docker rm -f $(docker ps -qa --filter ancestor=mysql:8.0)
             fi
             echo "pass mysql-container"

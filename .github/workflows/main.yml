@@ -54,7 +54,7 @@ jobs:
           mkdir -p src/main/resources
           cd src/main/resources
           pwd
-          echo "${{ secrets.EMAIL_PROPERTIES }}" > email.properties
+          echo "${{ secrets.EMAIL_PROPERTIES }}" > src/main/resources/email.properties
           cat email.properties
           
       ## spring security + jwt
@@ -104,7 +104,7 @@ jobs:
           script: |
             pwd
             ls -al
-            cd personal-project/actions-runner
+            cd cloud-library-project/backend/actions-runner
             pwd
             if [[ "$(docker ps -q --filter ancestor=mysql:8.0)" ]]; then
               docker rm -f $(docker ps -qa --filter ancestor=mysql:8.0)

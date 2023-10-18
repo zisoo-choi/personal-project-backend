@@ -94,11 +94,12 @@ jobs:
           password: ${{ secrets.GHCR_TOKEN }}
       
       - name: Deploy to prod
-        uses: appleboy/ssh-actionv0.1.10
+        uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.HOST_PROD }}
           username: ec2-user
           key: ${{ secrets.PRIVATE_KEY }}
+          port: 22
           script_stop : true
           script: |
             pwd

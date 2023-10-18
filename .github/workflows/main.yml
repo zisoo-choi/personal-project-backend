@@ -100,7 +100,6 @@ jobs:
           host: ${{ secrets.HOST_PROD }}
           username: ec2-user
           key: ${{ secrets.PRIVATE_KEY }}
-          port: 12345
           script_stop : true
           script: |
             pwd

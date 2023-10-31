@@ -101,7 +101,7 @@ jobs:
           host: ${{ secrets.PUBLIC_IP }}
           username: ec2-user
           key: ${{ secrets.PRIVATE_KEY }}
-          port: 22
+          port: ${{ secrets.SSH_PORT }}
           script_stop : true
           script: |
             pwd

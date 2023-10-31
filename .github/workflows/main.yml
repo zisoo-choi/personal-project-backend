@@ -22,6 +22,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'zulu' # https://github.com/actions/setup-java
+          port: ${{ secrets.SSH_PORT }}
           
       ## gradle caching
       - name: Gradle Caching
@@ -96,7 +97,8 @@ jobs:
       - name: Deploy to prod
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{ secrets.HOST_PROD }}
+          # host: ${{ secrets.HOST_PROD }}
+          host: ${{ secrets.PUBLIC_IP }}
           username: ec2-user
           key: ${{ secrets.PRIVATE_KEY }}
           port: 22

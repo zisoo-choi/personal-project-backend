@@ -1,7 +1,7 @@
 package kh.project.demo.security.service;
 
-import kh.project.demo.library.member.entity.Member;
-import kh.project.demo.library.member.repository.MemberRepository;
+import kh.project.demo.domain.member.entity.Member;
+import kh.project.demo.domain.member.repository.MemberRepository;
 import kh.project.demo.security.dto.CustomUserDetail;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
